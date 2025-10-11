@@ -3,3 +3,5 @@
   "Database:login": "",
   "Database:password": ""
 }
+
+[![Build and Publish for coursework](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml/badge.svg)](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml)
