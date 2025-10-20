@@ -10,4 +10,5 @@ public class CourseDto
     public string Status { get; set; } = string.Empty;
 
     public string InstructorName { get; set; } = string.Empty;
+    public int InstructorId { get; set; }
 }

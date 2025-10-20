@@ -16,9 +16,12 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
                 .ForMember(
                     dest => dest.InstructorName,
                     opt => opt.MapFrom(src => src.Instructor.FullName)
+                )
+                .ForMember(dest => dest.InstructorId,
+                    opt => opt.MapFrom(src => src.InstructorId)
                 );
 
-            // Здесь будут другие правила
+            CreateMap<CourseDto, CreateCourseDto>();
         }
     }
 }
