@@ -77,31 +77,22 @@ namespace OnlineLearningCenter.Web.Controllers
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var courseDto = await _courseService.GetCourseByIdAsync(id.Value);
+            if (courseDto == null) return NotFound();
 
-            var course = await _courseService.GetCourseByIdAsync(id.Value);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            // нужно получить InstructorId для выпадающего списка.
-
-            // Для формы редактирования нужен объект с полями, которые пользователь будет менять.
-            var courseToEdit = _mapper.Map<CreateCourseDto>(course);
-
-            await PopulateInstructorsDropDownList(course.InstructorId); // ID текущего преподавателя
+            var courseToEdit = _mapper.Map<UpdateCourseDto>(courseDto);
+            await PopulateInstructorsDropDownList(courseDto.InstructorId);
             return View(courseToEdit);
         }
 
         // POST: Courses/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CreateCourseDto courseDto)
+        public async Task<IActionResult> Edit(int id, UpdateCourseDto courseDto)
         {
+            if (id != courseDto.CourseId) return NotFound();
+
             if (ModelState.IsValid)
             {
                 try
