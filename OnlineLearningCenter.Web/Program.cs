@@ -16,7 +16,7 @@ namespace OnlineLearningCenter.Web
 
             #region Service Registration
             IConfigurationRoot configuration = builder.Configuration.AddUserSecrets<Program>().Build();
-            var connectionString = configuration.GetConnectionString("RemoteSQLConnection");
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             string secretPass = configuration["Database:password"];
             string secretUser = configuration["Database:login"];
             var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString)

@@ -1,13 +1,13 @@
-﻿@model IEnumerable<OnlineLearningCenter.DataAccess.Entities.Course>
+﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.CourseDto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Курсы";
 }
 
-<h1>Index</h1>
+<h1>Курсы</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Создать новый курс</a>
 </p>
 <table class="table">
     <thead>
@@ -28,38 +28,39 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Instructor)
+                Преподаватель
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Difficulty)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Instructor.FullName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CourseId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CourseId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CourseId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Difficulty)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InstructorName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CourseId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.CourseId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CourseId">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
