@@ -22,6 +22,9 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
                 );
 
             CreateMap<CourseDto, CreateCourseDto>();
+
+            CreateMap<CourseDto, UpdateCourseDto>();
+            CreateMap<UpdateCourseDto, Course>();
         }
     }
 }
