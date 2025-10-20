@@ -43,5 +43,9 @@ public class ApplicationDbContext : DbContext
             .WithMany(c => c.Modules)
             .HasForeignKey(m => m.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Enrollment>()
+                .Property(e => e.Progress)
+                .HasColumnType("decimal(5, 2)");
     }
 }
