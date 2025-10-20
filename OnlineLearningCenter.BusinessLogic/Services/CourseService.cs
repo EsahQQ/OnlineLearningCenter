@@ -49,7 +49,7 @@ public class CourseService : ICourseService
         return _mapper.Map<CourseDto>(course);
     }
 
-    public async Task UpdateCourseAsync(int id, CreateCourseDto courseDto)
+    public async Task UpdateCourseAsync(int id, UpdateCourseDto courseDto)
     {
         var existingCourse = await _courseRepository.GetByIdAsync(id);
         if (existingCourse == null)
