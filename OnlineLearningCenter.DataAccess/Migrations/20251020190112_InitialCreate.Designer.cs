@@ -12,7 +12,7 @@ using OnlineLearningCenter.DataAccess.Data;
 namespace OnlineLearningCenter.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251020151445_InitialCreate")]
+    [Migration("20251020190112_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
