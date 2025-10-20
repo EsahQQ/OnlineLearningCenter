@@ -1,7 +1,10 @@
-﻿namespace OnlineLearningCenter.DataAccess.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OnlineLearningCenter.DataAccess.Entities;
 
 public class TestResult
 {
+    [Key]
     public long ResultId { get; set; }
     public int StudentId { get; set; }
     public int TestId { get; set; }
