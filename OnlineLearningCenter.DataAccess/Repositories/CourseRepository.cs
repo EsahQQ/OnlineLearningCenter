@@ -47,4 +47,22 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CourseId == id);
     }
+
+    public async Task<IEnumerable<string>> GetAllCategoriesAsync()
+    {
+        return await _context.Courses
+            .Select(c => c.Category)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetAllDifficultiesAsync()
+    {
+        return await _context.Courses
+            .Select(c => c.Difficulty)
+            .Distinct()
+            .OrderBy(d => d)
+            .ToListAsync();
+    }
 }
