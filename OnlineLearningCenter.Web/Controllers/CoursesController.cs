@@ -21,14 +21,20 @@ namespace OnlineLearningCenter.Web.Controllers
             _mapper = mapper;
         }
 
-        // GET: Courses - добавляем параметры для фильтрации
+        // GET: Courses
         public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId)
         {
             var courses = await _courseService.GetActiveCoursesAsync(category, difficulty, instructorId);
 
-            // ViewBag.Instructors = ...
+            var instructors = await _instructorService.GetAllInstructorsAsync();
+            var categories = await _courseService.GetAllCategoriesAsync();
+            var difficulties = await _courseService.GetAllDifficultiesAsync();
 
-            return View(courses); 
+            ViewBag.Instructors = new SelectList(instructors, "InstructorId", "FullName", instructorId);
+            ViewBag.Categories = new SelectList(categories, category);
+            ViewBag.Difficulties = new SelectList(difficulties, difficulty);
+
+            return View(courses);
         }
 
         // GET: Courses/Details/5
