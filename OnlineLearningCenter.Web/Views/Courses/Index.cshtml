@@ -6,6 +6,27 @@
 
 <h1>Курсы</h1>
 
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="category" class="form-label">Категория</label>
+            @Html.DropDownList("category", ViewBag.Categories as SelectList, "Все категории", new { @class = "form-select" })
+        </div>
+        <div class="col-md-3">
+            <label for="difficulty" class="form-label">Сложность</label>
+            @Html.DropDownList("difficulty", ViewBag.Difficulties as SelectList, "Любая сложность", new { @class = "form-select" })
+        </div>
+        <div class="col-md-3">
+            <label for="instructorId" class="form-label">Преподаватель</label>
+            @Html.DropDownList("instructorId", ViewBag.Instructors as SelectList, "Все преподаватели", new { @class = "form-select" })
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Применить</button>
+            <a asp-action="Index" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </div>
+</form>
+
 <p>
     <a asp-action="Create">Создать новый курс</a>
 </p>
