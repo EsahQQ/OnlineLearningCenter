@@ -1,46 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using OnlineLearningCenter.DataAccess.Data;
-using OnlineLearningCenter.DataAccess.Entities;
+using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Services;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace OnlineLearningCenter.Web.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
+        private readonly IMapper _mapper;
 
-        public StudentsController(ApplicationDbContext context)
+        public StudentsController(IStudentService studentService, IMapper mapper)
         {
-            _context = context;
+            _studentService = studentService;
+            _mapper = mapper;
         }
 
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Students.ToListAsync());
+            var students = await _studentService.GetAllStudentsAsync();
+            return View(students);
         }
 
         // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
+            var student = await _studentService.GetStudentByIdAsync(id.Value);
+            if (student == null) return NotFound();
 
-            return View(student);
+            var studentProgress = await _studentService.GetStudentProgressAsync(id.Value);
+
+            ViewBag.Student = student;
+            return View(studentProgress);
         }
 
         // GET: Students/Create
@@ -50,87 +46,57 @@ namespace OnlineLearningCenter.Web.Controllers
         }
 
         // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,FullName,Email,RegistrationDate")] Student student)
+        public async Task<IActionResult> Create(CreateStudentDto studentDto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
+                await _studentService.CreateStudentAsync(studentDto);
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(studentDto);
         }
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var student = await _studentService.GetStudentByIdAsync(id.Value);
+            if (student == null) return NotFound();
 
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            return View(student);
+            var studentToUpdate = _mapper.Map<UpdateStudentDto>(student);
+            return View(studentToUpdate);
         }
 
         // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentId,FullName,Email,RegistrationDate")] Student student)
+        public async Task<IActionResult> Edit(int id, UpdateStudentDto studentDto)
         {
-            if (id != student.StudentId)
-            {
-                return NotFound();
-            }
+            if (id != studentDto.StudentId) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
+                    await _studentService.UpdateStudentAsync(studentDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (KeyNotFoundException)
                 {
-                    if (!StudentExists(student.StudentId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(studentDto);
         }
 
         // GET: Students/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var student = await _studentService.GetStudentByIdAsync(id.Value);
+            if (student == null) return NotFound();
             return View(student);
         }
 
@@ -139,19 +105,8 @@ namespace OnlineLearningCenter.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
-            {
-                _context.Students.Remove(student);
-            }
-
-            await _context.SaveChangesAsync();
+            await _studentService.DeleteStudentAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool StudentExists(int id)
-        {
-            return _context.Students.Any(e => e.StudentId == id);
         }
     }
 }
