@@ -17,7 +17,8 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
                     dest => dest.InstructorName,
                     opt => opt.MapFrom(src => src.Instructor.FullName)
                 )
-                .ForMember(dest => dest.InstructorId,
+                .ForMember(
+                    dest => dest.InstructorId,
                     opt => opt.MapFrom(src => src.InstructorId)
                 );
 
@@ -28,7 +29,17 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
 
             CreateMap<CreateInstructorDto, Instructor>();
             CreateMap<InstructorDto, UpdateInstructorDto>(); 
-            CreateMap<UpdateInstructorDto, Instructor>();  
+            CreateMap<UpdateInstructorDto, Instructor>();
+
+            CreateMap<Student, StudentDto>()
+                .ForMember(
+                    dest => dest.RegistrationDate,
+                    opt => opt.MapFrom(src => src.RegistrationDate.ToString("dd.MM.yyyy"))
+                );
+
+            CreateMap<CreateStudentDto, Student>();
+            CreateMap<StudentDto, UpdateStudentDto>();
+            CreateMap<UpdateStudentDto, Student>();
         }
     }
 }
