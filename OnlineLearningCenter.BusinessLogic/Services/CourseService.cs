@@ -59,4 +59,14 @@ public class CourseService : ICourseService
         _mapper.Map(courseDto, existingCourse);
         await _courseRepository.UpdateAsync(existingCourse);
     }
+
+    public async Task<IEnumerable<string>> GetAllCategoriesAsync()
+    {
+        return await _courseRepository.GetAllCategoriesAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetAllDifficultiesAsync()
+    {
+        return await _courseRepository.GetAllDifficultiesAsync();
+    }
 }
