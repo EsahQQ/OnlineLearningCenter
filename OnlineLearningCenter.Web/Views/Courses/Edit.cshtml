@@ -1,58 +1,58 @@
 ﻿@model OnlineLearningCenter.BusinessLogic.DTOs.UpdateCourseDto
 
 @{
-    ViewData["Title"] = "Редактирование";
+    ViewData["Title"] = "Редактирование курса";
 }
 
-<h1>Редактировать</h1>
+<h1>Редактирование</h1>
 
-<h4>Курс</h4>
+<h4>Курс: @Model.Title</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CourseId" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Название</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Описание</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Difficulty" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Difficulty" class="form-label">Уровень сложности</label>
                 <input asp-for="Difficulty" class="form-control" />
                 <span asp-validation-for="Difficulty" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Category" class="form-label">Категория</label>
                 <input asp-for="Category" class="form-control" />
                 <span asp-validation-for="Category" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Статус</label>
                 <input asp-for="Status" class="form-control" />
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="InstructorId" class="control-label">Преподаватель</label>
-                <select asp-for="InstructorId" class="form-control" asp-items="ViewBag.InstructorId"></select>
+            <div class="mb-3">
+                <label asp-for="InstructorId" class="form-label">Преподаватель</label>
+                <select asp-for="InstructorId" class="form-select" asp-items="ViewBag.InstructorId"></select>
                 <span asp-validation-for="InstructorId" class="text-danger"></span>
             </div>
+
             <div class="form-group mt-3">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Назад к списку</a>
-</div>
 
 @section Scripts {
     @{
