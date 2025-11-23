@@ -1,35 +1,34 @@
 ﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.InstructorDto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Преподаватели";
 }
 
-<h1>Index</h1>
+<h1>Список преподавателей</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Добавить преподавателя</a>
 </p>
-<table class="table">
+<table class="table table-striped table-hover">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
+            <th>ФИО</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.InstructorId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InstructorId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InstructorId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.InstructorId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.InstructorId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.InstructorId">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
