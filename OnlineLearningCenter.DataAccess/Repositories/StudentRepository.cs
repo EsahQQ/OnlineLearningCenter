@@ -24,4 +24,26 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.StudentId == studentId);
     }
+
+    public async Task<IEnumerable<(Student Student, double AverageScore)>> GetStudentRankingsAsync(int? courseId = null)
+    {
+        var query = _context.TestResults.AsQueryable();
+
+        if (courseId.HasValue)
+        {
+            query = query.Where(tr => tr.Test.Module.CourseId == courseId.Value);
+        }
+
+        var rankingData = await query
+            .GroupBy(tr => tr.Student) 
+            .Select(g => new
+            {
+                Student = g.Key,
+                AverageScore = g.Average(tr => tr.Score) 
+            })
+            .OrderByDescending(r => r.AverageScore) 
+            .ToListAsync();
+
+        return rankingData.Select(r => (r.Student, r.AverageScore));
+    }
 }
