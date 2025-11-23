@@ -65,4 +65,15 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
             .OrderBy(d => d)
             .ToListAsync();
     }
+
+    public async Task<Course?> GetCourseForAnalyticsAsync(int courseId)
+    {
+        return await _context.Courses
+            .Include(c => c.Enrollments)
+            .Include(c => c.Modules)
+                .ThenInclude(m => m.Tests)
+                    .ThenInclude(t => t.TestResults)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.CourseId == courseId);
+    }
 }

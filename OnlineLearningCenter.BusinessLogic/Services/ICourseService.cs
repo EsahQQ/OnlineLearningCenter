@@ -14,4 +14,5 @@ public interface ICourseService
 
     Task<IEnumerable<string>> GetAllCategoriesAsync();
     Task<IEnumerable<string>> GetAllDifficultiesAsync();
+    Task<CourseAnalyticsDto?> GetCourseAnalyticsAsync(int courseId);
 }

@@ -69,4 +69,36 @@ public class CourseService : ICourseService
     {
         return await _courseRepository.GetAllDifficultiesAsync();
     }
+
+    public async Task<CourseAnalyticsDto?> GetCourseAnalyticsAsync(int courseId)
+    {
+        var course = await _courseRepository.GetCourseForAnalyticsAsync(courseId);
+
+        if (course == null)
+        {
+            return null;
+        }
+
+        int totalStudents = course.Enrollments.Count;
+        int completedStudents = course.Enrollments.Count(e => e.Progress >= 100);
+
+        var allTestResults = course.Modules
+            .SelectMany(m => m.Tests)
+            .SelectMany(t => t.TestResults);
+
+        double averageScore = 0;
+        if (allTestResults.Any())
+        {
+            averageScore = allTestResults.Average(tr => tr.Score);
+        }
+
+        return new CourseAnalyticsDto
+        {
+            CourseId = course.CourseId,
+            CourseTitle = course.Title,
+            TotalStudentsEnrolled = totalStudents,
+            StudentsCompleted = completedStudents,
+            AverageScoreForCourse = averageScore
+        };
+    }
 }

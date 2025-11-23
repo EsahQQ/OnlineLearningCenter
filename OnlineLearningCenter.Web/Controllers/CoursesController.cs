@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;
+using OnlineLearningCenter.Web.ViewModels;
 using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers
@@ -44,14 +45,22 @@ namespace OnlineLearningCenter.Web.Controllers
             {
                 return NotFound();
             }
-
+            
             var course = await _courseService.GetCourseByIdAsync(id.Value);
             if (course == null)
             {
                 return NotFound();
             }
 
-            return View(course); 
+            var analytics = await _courseService.GetCourseAnalyticsAsync(id.Value);
+
+            var viewModel = new CourseDetailsViewModel
+            {
+                Course = course,
+                Analytics = analytics
+            };
+
+            return View(viewModel);
         }
 
         // GET: Courses/Create
