@@ -9,28 +9,25 @@
 <h4>Новый студент</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label">ФИО</label>
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label">ФИО</label>
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
-            <div class="form-group mt-2">
-                <label asp-for="Email" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group mt-3">
+            <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Назад к списку</a>
 </div>
 
 @section Scripts {
