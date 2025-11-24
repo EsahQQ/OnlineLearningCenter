@@ -96,9 +96,16 @@
             <tr>
                 <td>@module.OrderNumber</td>
                 <td>@module.Title</td>
-                <td>
-                    <a asp-controller="Modules" asp-action="Edit" asp-route-id="@module.ModuleId">Редактировать</a> |
-                    <a asp-controller="Modules" asp-action="Delete" asp-route-id="@module.ModuleId">Удалить</a>
+                <td class="text-nowrap">
+                    <a asp-controller="Tests" asp-action="Index" asp-route-moduleId="@module.ModuleId" class="btn btn-sm btn-outline-info" title="Управлять тестами">
+                        <i class="bi bi-card-checklist"></i> Тесты
+                    </a>
+                    <a asp-controller="Modules" asp-action="Edit" asp-route-id="@module.ModuleId" class="btn btn-sm btn-outline-warning" title="Редактировать модуль">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a asp-controller="Modules" asp-action="Delete" asp-route-id="@module.ModuleId" class="btn btn-sm btn-outline-danger" title="Удалить модуль">
+                        <i class="bi bi-trash"></i>
+                    </a>
                 </td>
             </tr>
         }

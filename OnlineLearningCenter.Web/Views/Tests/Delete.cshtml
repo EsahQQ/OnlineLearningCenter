@@ -1,0 +1,25 @@
+﻿@model TestDto
+
+@{
+    ViewData["Title"] = "Удаление теста";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h3>Вы уверены, что хотите удалить этот тест?</h3>
+<p class="text-danger">Внимание! При удалении теста также будут удалены все результаты его прохождения студентами.</p>
+
+<div>
+    <h4>Тест из модуля "@ViewBag.ModuleTitle"</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Название</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Title)</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TestId" name="testId" />
+        <input type="hidden" name="moduleId" value="@Model.ModuleId" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index" asp-route-moduleId="@Model.ModuleId">Отмена</a>
+    </form>
+</div>
