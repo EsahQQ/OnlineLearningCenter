@@ -18,9 +18,9 @@ namespace OnlineLearningCenter.Web.Controllers
         }
 
         // GET: Instructors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            var instructors = await _instructorService.GetAllInstructorsAsync();
+            var instructors = await _instructorService.GetPaginatedInstructorsAsync(pageNumber);
             return View(instructors);
         }
 

@@ -1,4 +1,5 @@
-﻿using OnlineLearningCenter.DataAccess.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineLearningCenter.DataAccess.Data;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
 
@@ -8,5 +9,9 @@ public class InstructorRepository : GenericRepository<Instructor>, IInstructorRe
 {
     public InstructorRepository(ApplicationDbContext context) : base(context)
     {
+    }
+    public IQueryable<Instructor> GetInstructorsQueryable()
+    {
+        return _context.Instructors.AsNoTracking();
     }
 }

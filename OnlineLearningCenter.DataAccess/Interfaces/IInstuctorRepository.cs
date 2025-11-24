@@ -2,4 +2,7 @@
 
 namespace OnlineLearningCenter.DataAccess.Interfaces;
 
-public interface IInstructorRepository : IGenericRepository<Instructor> { }
+public interface IInstructorRepository : IGenericRepository<Instructor> 
+{
+    IQueryable<Instructor> GetInstructorsQueryable();
+}

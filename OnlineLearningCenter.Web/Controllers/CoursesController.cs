@@ -27,7 +27,7 @@ namespace OnlineLearningCenter.Web.Controllers
             var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(
                 category, difficulty, instructorId, showOnlyActive, pageNumber);
 
-            var instructors = await _instructorService.GetAllInstructorsAsync();
+            var instructors = await _instructorService.GetAllInstructorsForSelectListAsync();
             var categories = await _courseService.GetAllCategoriesAsync();
             var difficulties = await _courseService.GetAllDifficultiesAsync();
 
@@ -155,7 +155,7 @@ namespace OnlineLearningCenter.Web.Controllers
 
         private async Task PopulateInstructorsDropDownList(object? selectedInstructor = null)
         {
-            var instructors = await _instructorService.GetAllInstructorsAsync();
+            var instructors = await _instructorService.GetAllInstructorsForSelectListAsync();
             ViewBag.InstructorId = new SelectList(instructors, "InstructorId", "FullName", selectedInstructor);
         }
     }
