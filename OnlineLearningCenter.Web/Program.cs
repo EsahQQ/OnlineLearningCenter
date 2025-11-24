@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineLearningCenter.BusinessLogic.Mappings;
 using OnlineLearningCenter.BusinessLogic.Services;
 using OnlineLearningCenter.DataAccess.Data;
 using OnlineLearningCenter.DataAccess.Interfaces;
 using OnlineLearningCenter.DataAccess.Repositories;
-using Microsoft.Data.SqlClient;
 
 namespace OnlineLearningCenter.Web
 {
@@ -16,17 +17,31 @@ namespace OnlineLearningCenter.Web
 
             #region Service Registration
             IConfigurationRoot configuration = builder.Configuration.AddUserSecrets<Program>().Build();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            var appConnectionString = configuration.GetConnectionString("AppConnection");
             string secretPass = configuration["Database:password"];
             string secretUser = configuration["Database:login"];
-            var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString)
+            var appSqlBuilder = new SqlConnectionStringBuilder(appConnectionString)
             {
-                Password = secretPass,
-                UserID = secretUser
+                UserID = builder.Configuration["Database:AppUser"],
+                Password = builder.Configuration["Database:AppPassword"]
             };
-            connectionString = sqlConnectionStringBuilder.ConnectionString;
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+            var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
+            var identitySqlBuilder = new SqlConnectionStringBuilder(identityConnectionString)
+            {
+                UserID = builder.Configuration["Database:IdentityUser"],
+                Password = builder.Configuration["Database:IdentityPassword"]
+            };
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(appConnectionString));
+            builder.Services.AddDbContext<IdentityDataContext>(options =>
+                options.UseSqlServer(identityConnectionString));
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>() 
+                .AddEntityFrameworkStores<IdentityDataContext>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
