@@ -46,4 +46,8 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
 
         return rankingData.Select(r => (r.Student, r.AverageScore));
     }
+    public IQueryable<Student> GetStudentsQueryable()
+    {
+        return _context.Students.AsNoTracking();
+    }
 }

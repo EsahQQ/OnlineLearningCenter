@@ -1,4 +1,5 @@
 ﻿using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Helpers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services
     public interface IStudentService
     {
         Task<IEnumerable<StudentCourseProgressDto>> GetStudentProgressAsync(int studentId);
-        Task<IEnumerable<StudentDto>> GetAllStudentsAsync();
+        Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(int pageNumber);
         Task<StudentDto?> GetStudentByIdAsync(int id);
         Task<StudentDto> CreateStudentAsync(CreateStudentDto studentDto);
         Task UpdateStudentAsync(UpdateStudentDto studentDto);

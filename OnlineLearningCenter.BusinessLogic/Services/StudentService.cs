@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
+        private const int PageSize = 10;
 
         public StudentService(IStudentRepository studentRepository, IMapper mapper)
         {
@@ -51,10 +53,13 @@ namespace OnlineLearningCenter.BusinessLogic.Services
         }
 
 
-        public async Task<IEnumerable<StudentDto>> GetAllStudentsAsync()
+        public async Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(int pageNumber)
         {
-            var students = await _studentRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<StudentDto>>(students);
+            var query = _studentRepository.GetStudentsQueryable();
+
+            var dtoQuery = _mapper.ProjectTo<StudentDto>(query);
+
+            return await PaginatedList<StudentDto>.CreateAsync(dtoQuery.OrderBy(s => s.FullName), pageNumber, PageSize);
         }
 
         public async Task<StudentDto?> GetStudentByIdAsync(int id)
