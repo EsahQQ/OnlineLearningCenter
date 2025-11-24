@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ public class CourseService : ICourseService
 {
     private readonly ICourseRepository _courseRepository;
     private readonly IMapper _mapper;
+    private const int PageSize = 10;
 
     public CourseService(ICourseRepository courseRepository, IMapper mapper)
     {
@@ -31,10 +33,19 @@ public class CourseService : ICourseService
         await _courseRepository.DeleteAsync(id);
     }
 
-    public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync(string? category, string? difficulty, int? instructorId, bool showOnlyActive)
+    public async Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(
+        string? category, string? difficulty, int? instructorId, bool showOnlyActive, int pageNumber)
     {
-        var courses = await _courseRepository.GetActiveCoursesFilteredAsync(category, difficulty, instructorId, showOnlyActive);
-        return _mapper.Map<IEnumerable<CourseDto>>(courses);
+        var query = _courseRepository.GetCoursesQueryable();
+
+        if (showOnlyActive) { query = query.Where(c => c.Status == "Активен"); }
+        if (!string.IsNullOrEmpty(category)) { query = query.Where(c => c.Category == category); }
+        if (!string.IsNullOrEmpty(difficulty)) { query = query.Where(c => c.Difficulty == difficulty); }
+        if (instructorId.HasValue) { query = query.Where(c => c.InstructorId == instructorId.Value); }
+
+        var dtoQuery = _mapper.ProjectTo<CourseDto>(query);
+
+        return await PaginatedList<CourseDto>.CreateAsync(dtoQuery, pageNumber, PageSize);
     }
 
     public async Task<CourseDto?> GetCourseByIdAsync(int id)

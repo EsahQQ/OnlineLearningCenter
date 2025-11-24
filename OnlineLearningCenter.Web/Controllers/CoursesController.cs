@@ -10,7 +10,6 @@ namespace OnlineLearningCenter.Web.Controllers
 {
     public class CoursesController : Controller
     {
-        // Внедряем сервисы и AutoMapper вместо DbContext
         private readonly ICourseService _courseService;
         private readonly IInstructorService _instructorService;
         private readonly IMapper _mapper;
@@ -23,9 +22,10 @@ namespace OnlineLearningCenter.Web.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId, bool showOnlyActive = false)
+        public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId, bool showOnlyActive = false, int pageNumber = 1)
         {
-            var courses = await _courseService.GetActiveCoursesAsync(category, difficulty, instructorId, showOnlyActive);
+            var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(
+                category, difficulty, instructorId, showOnlyActive, pageNumber);
 
             var instructors = await _instructorService.GetAllInstructorsAsync();
             var categories = await _courseService.GetAllCategoriesAsync();
@@ -37,7 +37,12 @@ namespace OnlineLearningCenter.Web.Controllers
 
             ViewBag.ShowOnlyActive = showOnlyActive;
 
-            return View(courses);
+            ViewData["CurrentCategory"] = category;
+            ViewData["CurrentDifficulty"] = difficulty;
+            ViewData["CurrentInstructorId"] = instructorId;
+            ViewData["CurrentShowOnlyActive"] = showOnlyActive;
+
+            return View(paginatedCourses);
         }
 
         // GET: Courses/Details/5
@@ -68,7 +73,6 @@ namespace OnlineLearningCenter.Web.Controllers
         // GET: Courses/Create
         public async Task<IActionResult> Create()
         {
-            // вспомогательный метод для загрузки преподавателей
             await PopulateInstructorsDropDownList();
             return View();
         }
@@ -76,17 +80,14 @@ namespace OnlineLearningCenter.Web.Controllers
         // POST: Courses/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Вместо Entity Course принимаем CreateCourseDto
         public async Task<IActionResult> Create(CreateCourseDto courseDto)
         {
-            // 3. ModelState.IsValid проверяет атрибуты валидации из CreateCourseDto
             if (ModelState.IsValid)
             {
                 await _courseService.CreateCourseAsync(courseDto);
                 return RedirectToAction(nameof(Index));
             }
 
-            // Если модель невалидна, снова загружаем преподавателей и возвращаем View с теми же данными
             await PopulateInstructorsDropDownList(courseDto.InstructorId);
             return View(courseDto);
         }
@@ -152,7 +153,6 @@ namespace OnlineLearningCenter.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Вспомогательный метод
         private async Task PopulateInstructorsDropDownList(object? selectedInstructor = null)
         {
             var instructors = await _instructorService.GetAllInstructorsAsync();

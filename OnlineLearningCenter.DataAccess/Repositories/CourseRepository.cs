@@ -14,35 +14,6 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
     }
 
-    public async Task<IEnumerable<Course>> GetActiveCoursesFilteredAsync(string? category, string? difficulty, int? instructorId, bool showOnlyActive)
-    {
-        var query = _context.Courses
-            .Include(c => c.Instructor)
-            .AsQueryable();
-
-        if (showOnlyActive)
-        {
-            query = query.Where(c => c.Status == "Активен");
-        }
-
-        if (!string.IsNullOrEmpty(category))
-        {
-            query = query.Where(c => c.Category == category);
-        }
-
-        if (!string.IsNullOrEmpty(difficulty))
-        {
-            query = query.Where(c => c.Difficulty == difficulty);
-        }
-
-        if (instructorId.HasValue && instructorId.Value > 0)
-        {
-            query = query.Where(c => c.InstructorId == instructorId.Value);
-        }
-
-        return await query.AsNoTracking().ToListAsync();
-    }
-
     public async Task<Course?> GetCourseWithDetailsAsync(int id)
     {
         return await _context.Courses
@@ -79,5 +50,10 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
                     .ThenInclude(t => t.TestResults)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CourseId == courseId);
+    }
+
+    public IQueryable<Course> GetCoursesQueryable()
+    {
+        return _context.Courses.Include(c => c.Instructor).AsNoTracking();
     }
 }

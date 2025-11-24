@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.CourseDto>
+﻿@model OnlineLearningCenter.BusinessLogic.Helpers.PaginatedList<OnlineLearningCenter.BusinessLogic.DTOs.CourseDto>
 
 @{
     ViewData["Title"] = "Список курсов";
@@ -83,3 +83,5 @@
         }
     </tbody>
 </table>
+<hr />
+<partial name="_Pagination" model="Model" />

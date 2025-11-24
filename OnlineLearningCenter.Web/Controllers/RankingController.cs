@@ -20,7 +20,8 @@ namespace OnlineLearningCenter.Web.Controllers
         {
             var rankings = await _studentService.GetStudentRankingsAsync(courseId);
 
-            var allCourses = await _courseService.GetActiveCoursesAsync(null, null, null, false);
+            var paginatedResult = await _courseService.GetPaginatedCoursesAsync(null, null, null, false, 1);
+            var allCourses = paginatedResult.ToList();
             ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", courseId);
 
             ViewBag.SelectedCourseId = courseId;

@@ -1,4 +1,4 @@
-﻿using AutoMapper; // Добавляем AutoMapper
+﻿using AutoMapper; 
 using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;

@@ -1,0 +1,43 @@
+﻿@model dynamic
+
+@{
+    var routeData = new Dictionary<string, string>
+    {
+        { "category", ViewData["CurrentCategory"]?.ToString() ?? "" },
+        { "difficulty", ViewData["CurrentDifficulty"]?.ToString() ?? "" },
+        { "instructorId", ViewData["CurrentInstructorId"]?.ToString() ?? "" },
+        { "showOnlyActive", ViewData["CurrentShowOnlyActive"]?.ToString() ?? "" }
+    };
+}
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@routeData" asp-route-pageNumber="@(Model.PageIndex - 1)">Назад</a>
+            </li>
+
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == 1 || i == Model.TotalPages || (i >= Model.PageIndex - 2 && i <= Model.PageIndex + 2))
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-all-route-data="@routeData" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+    
+                else if (i == Model.PageIndex - 3 || i == Model.PageIndex + 3)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                }
+            }
+
+            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="@routeData" asp-route-pageNumber="@(Model.PageIndex + 1)">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+}
