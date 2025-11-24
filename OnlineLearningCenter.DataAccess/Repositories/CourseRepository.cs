@@ -14,12 +14,16 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
     }
 
-    public async Task<IEnumerable<Course>> GetActiveCoursesFilteredAsync(string? category, string? difficulty, int? instructorId)
+    public async Task<IEnumerable<Course>> GetActiveCoursesFilteredAsync(string? category, string? difficulty, int? instructorId, bool showOnlyActive)
     {
         var query = _context.Courses
             .Include(c => c.Instructor)
-            .Where(c => c.Status == "Активен")
             .AsQueryable();
+
+        if (showOnlyActive)
+        {
+            query = query.Where(c => c.Status == "Активен");
+        }
 
         if (!string.IsNullOrEmpty(category))
         {

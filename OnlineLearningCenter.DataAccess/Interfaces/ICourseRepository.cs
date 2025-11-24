@@ -6,7 +6,7 @@ namespace OnlineLearningCenter.DataAccess.Interfaces;
 
 public interface ICourseRepository : IGenericRepository<Course>
 {
-    Task<IEnumerable<Course>> GetActiveCoursesFilteredAsync(string? category, string? difficulty, int? instructorId);
+    Task<IEnumerable<Course>> GetActiveCoursesFilteredAsync(string? category, string? difficulty, int? instructorId, bool showOnlyActive);
     Task<Course?> GetCourseWithDetailsAsync(int id);
 
     Task<IEnumerable<string>> GetAllCategoriesAsync();

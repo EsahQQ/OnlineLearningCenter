@@ -23,9 +23,9 @@ namespace OnlineLearningCenter.Web.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId)
+        public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId, bool showOnlyActive = false)
         {
-            var courses = await _courseService.GetActiveCoursesAsync(category, difficulty, instructorId);
+            var courses = await _courseService.GetActiveCoursesAsync(category, difficulty, instructorId, showOnlyActive);
 
             var instructors = await _instructorService.GetAllInstructorsAsync();
             var categories = await _courseService.GetAllCategoriesAsync();
@@ -34,6 +34,8 @@ namespace OnlineLearningCenter.Web.Controllers
             ViewBag.Instructors = new SelectList(instructors, "InstructorId", "FullName", instructorId);
             ViewBag.Categories = new SelectList(categories, category);
             ViewBag.Difficulties = new SelectList(difficulties, difficulty);
+
+            ViewBag.ShowOnlyActive = showOnlyActive;
 
             return View(courses);
         }

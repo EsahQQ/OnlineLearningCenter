@@ -31,10 +31,9 @@ public class CourseService : ICourseService
         await _courseRepository.DeleteAsync(id);
     }
 
-    public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync(string? category, string? difficulty, int? instructorId)
+    public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync(string? category, string? difficulty, int? instructorId, bool showOnlyActive)
     {
-        var courses = await _courseRepository.GetActiveCoursesFilteredAsync(category, difficulty, instructorId);
-
+        var courses = await _courseRepository.GetActiveCoursesFilteredAsync(category, difficulty, instructorId, showOnlyActive);
         return _mapper.Map<IEnumerable<CourseDto>>(courses);
     }
 
