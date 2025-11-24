@@ -61,6 +61,25 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
                 .ForMember(dest => dest.CompletionDate,
                            opt => opt.MapFrom(src => src.CompletionDate.ToString("dd.MM.yyyy"))
                 );
+
+            CreateMap<Certificate, CertificateDto>()
+                .ForMember(dest => dest.StudentFullName,
+                           opt => opt.MapFrom(src => src.Student.FullName)
+                )
+                .ForMember(dest => dest.CourseTitle,
+                           opt => opt.MapFrom(src => src.Course.Title)
+                )
+                .ForMember(dest => dest.IssueDate,
+                           opt => opt.MapFrom(src => src.IssueDate.ToString("dd.MM.yyyy"))
+                );
+
+            CreateMap<CreateCertificateDto, Certificate>()
+                .ForMember(dest => dest.IssueDate,
+                           opt => opt.MapFrom(src => DateOnly.FromDateTime(System.DateTime.Now))
+                );
+
+            CreateMap<CertificateDto, UpdateCertificateDto>();
+            CreateMap<UpdateCertificateDto, Certificate>();
         }
     }
 }

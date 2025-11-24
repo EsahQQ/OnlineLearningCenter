@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.StudentCourseProgressDto>
+@using OnlineLearningCenter.BusinessLogic.DTOs
 
 @{
     ViewData["Title"] = "Прогресс студента";
@@ -36,6 +37,7 @@ else
                 <th>Название курса</th>
                 <th>Прогресс по модулям</th>
                 <th>Средний балл по тестам</th>
+                <th>Сертификат</th>
             </tr>
         </thead>
         <tbody>
@@ -56,6 +58,30 @@ else
                     </td>
                     <td>
                         @item.AverageTestScore.ToString("F2")
+                    </td>
+                    <td>
+                        @{
+                            var certificate = (ViewBag.Certificates as IEnumerable<CertificateDto>)
+                            ?.FirstOrDefault(c => c.CourseId == item.CourseId);
+                        }
+                        @if (certificate != null)
+                        {
+                            <a href="@certificate.CertificateUrl" target="_blank" class="btn btn-sm btn-light" title="Просмотреть сертификат">
+                                <i class="bi bi-patch-check-fill text-success"></i> Выдан
+                            </a>
+                            <a asp-controller="Certificates" asp-action="Edit" asp-route-id="@certificate.CertificateId" class="btn btn-sm btn-light" title="Редактировать"><i class="bi bi-pencil"></i></a>
+                            <a asp-controller="Certificates" asp-action="Delete" asp-route-id="@certificate.CertificateId" class="btn btn-sm btn-light" title="Аннулировать"><i class="bi bi-trash3"></i></a>
+                        }
+                        else if (item.ModulesCompletedProgress >= 100)
+                        {
+                            <a asp-controller="Certificates" asp-action="Create" asp-route-studentId="@ViewBag.Student.StudentId" asp-route-courseId="@item.CourseId" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-patch-plus"></i> Выдать
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Недоступен</span>
+                        }
                     </td>
                 </tr>
             }

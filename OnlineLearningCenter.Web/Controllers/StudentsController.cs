@@ -11,11 +11,13 @@ namespace OnlineLearningCenter.Web.Controllers
     {
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly ICertificateService _certificateService;
 
-        public StudentsController(IStudentService studentService, IMapper mapper)
+        public StudentsController(IStudentService studentService, IMapper mapper, ICertificateService certificateService)
         {
             _studentService = studentService;
             _mapper = mapper;
+            _certificateService = certificateService;
         }
 
         // GET: Students
@@ -34,6 +36,9 @@ namespace OnlineLearningCenter.Web.Controllers
             if (student == null) return NotFound();
 
             var studentProgress = await _studentService.GetStudentProgressAsync(id.Value);
+
+            var certificates = await _certificateService.GetCertificatesByStudentIdAsync(id.Value);
+            ViewBag.Certificates = certificates;
 
             ViewBag.Student = student;
             return View(studentProgress);

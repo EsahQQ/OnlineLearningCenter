@@ -1,0 +1,23 @@
+﻿@model CertificateDto
+@{
+    ViewData["Title"] = "Аннулирование сертификата";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h3>Вы уверены, что хотите аннулировать этот сертификат?</h3>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Студент</dt>
+    <dd class="col-sm-9">@Model.StudentFullName</dd>
+    <dt class="col-sm-3">Курс</dt>
+    <dd class="col-sm-9">@Model.CourseTitle</dd>
+    <dt class="col-sm-3">Дата выдачи</dt>
+    <dd class="col-sm-9">@Model.IssueDate</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="CertificateId" name="certificateId" />
+    <input type="hidden" name="studentId" value="@Model.StudentId" />
+    <input type="submit" value="Аннулировать" class="btn btn-danger" /> |
+    <a asp-controller="Students" asp-action="Details" asp-route-id="@Model.StudentId">Отмена</a>
+</form>
