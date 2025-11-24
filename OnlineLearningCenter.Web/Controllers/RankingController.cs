@@ -16,18 +16,18 @@ namespace OnlineLearningCenter.Web.Controllers
             _courseService = courseService;
         }
 
-        public async Task<IActionResult> Index(int? courseId)
+        public async Task<IActionResult> Index(int? courseId, int pageNumber = 1)
         {
-            var rankings = await _studentService.GetStudentRankingsAsync(courseId);
+            var rankings = await _studentService.GetStudentRankingsAsync(courseId, pageNumber);
 
-            var paginatedResult = await _courseService.GetPaginatedCoursesAsync(null, null, null, false, 1);
-            var allCourses = paginatedResult.ToList();
+            var allCourses = await _courseService.GetAllCoursesForSelectListAsync();
             ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", courseId);
 
-            ViewBag.SelectedCourseId = courseId;
+            ViewData["CurrentCourseId"] = courseId;
+
             if (courseId.HasValue)
             {
-                var selectedCourse = await _courseService.GetCourseByIdAsync(courseId.Value);
+                var selectedCourse = allCourses.FirstOrDefault(c => c.CourseId == courseId.Value);
                 ViewBag.SelectedCourseTitle = selectedCourse?.Title;
             }
 

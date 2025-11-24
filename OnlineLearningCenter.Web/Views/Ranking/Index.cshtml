@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.StudentRankingDto>
+﻿@model OnlineLearningCenter.BusinessLogic.Helpers.PaginatedList<OnlineLearningCenter.BusinessLogic.DTOs.StudentRankingDto>
 
 @{
     ViewData["Title"] = "Рейтинг студентов";
@@ -56,4 +56,6 @@ else
             }
         </tbody>
     </table>
+
+    <partial name="_Pagination" model="Model" />
 }

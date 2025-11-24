@@ -8,6 +8,11 @@
         { "instructorId", ViewData["CurrentInstructorId"]?.ToString() ?? "" },
         { "showOnlyActive", ViewData["CurrentShowOnlyActive"]?.ToString() ?? "" }
     };
+
+    if (ViewData["CurrentCourseId"] != null)
+    {
+        routeData["courseId"] = ViewData["CurrentCourseId"].ToString();
+    }
 }
 
 @if (Model.TotalPages > 1)

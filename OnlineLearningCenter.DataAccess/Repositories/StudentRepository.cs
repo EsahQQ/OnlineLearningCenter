@@ -25,7 +25,7 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
             .FirstOrDefaultAsync(s => s.StudentId == studentId);
     }
 
-    public async Task<IEnumerable<(Student Student, double AverageScore)>> GetStudentRankingsAsync(int? courseId = null)
+    public IQueryable<(Student Student, double AverageScore)> GetStudentRankingsQueryable(int? courseId = null)
     {
         var query = _context.TestResults.AsQueryable();
 
@@ -34,18 +34,16 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
             query = query.Where(tr => tr.Test.Module.CourseId == courseId.Value);
         }
 
-        var rankingData = await query
-            .GroupBy(tr => tr.Student) 
-            .Select(g => new
-            {
+        return query
+            .GroupBy(tr => tr.Student)
+            .Select(g => new { 
                 Student = g.Key,
-                AverageScore = g.Average(tr => tr.Score) 
+                AverageScore = g.Average(tr => tr.Score)
             })
-            .OrderByDescending(r => r.AverageScore) 
-            .ToListAsync();
-
-        return rankingData.Select(r => (r.Student, r.AverageScore));
+            .OrderByDescending(r => r.AverageScore)
+            .Select(r => new ValueTuple<Student, double>(r.Student, r.AverageScore)); 
     }
+
     public IQueryable<Student> GetStudentsQueryable()
     {
         return _context.Students.AsNoTracking();

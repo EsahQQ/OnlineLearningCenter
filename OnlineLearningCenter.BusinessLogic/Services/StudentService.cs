@@ -92,18 +92,18 @@ namespace OnlineLearningCenter.BusinessLogic.Services
             await _studentRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<StudentRankingDto>> GetStudentRankingsAsync(int? courseId = null)
+        public async Task<PaginatedList<StudentRankingDto>> GetStudentRankingsAsync(int? courseId, int pageNumber)
         {
-            var rankingData = await _studentRepository.GetStudentRankingsAsync(courseId);
+            var query = _studentRepository.GetStudentRankingsQueryable(courseId);
 
-            var rankingDto = rankingData.Select(r => new StudentRankingDto
+            var dtoQuery = query.Select(r => new StudentRankingDto
             {
                 StudentId = r.Student.StudentId,
                 FullName = r.Student.FullName,
                 AverageScore = r.AverageScore
             });
 
-            return rankingDto;
+            return await PaginatedList<StudentRankingDto>.CreateAsync(dtoQuery, pageNumber, PageSize);
         }
     }
 }
