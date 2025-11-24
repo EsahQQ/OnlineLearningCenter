@@ -92,6 +92,7 @@ public class ModulesController : Controller
         var course = await _courseService.GetCourseByIdAsync(module.CourseId);
         ViewBag.CourseTitle = course?.Title;
 
+
         return View(module);
     }
 
