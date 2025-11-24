@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
@@ -48,6 +49,13 @@ public class CourseService : ICourseService
         return await PaginatedList<CourseDto>.CreateAsync(dtoQuery, pageNumber, PageSize);
     }
 
+    public async Task<IEnumerable<CourseDto>> GetAllCoursesForSelectListAsync()
+    {
+        var query = _courseRepository.GetCoursesQueryable();
+        query = query.OrderBy(c => c.Title);
+
+        return await _mapper.ProjectTo<CourseDto>(query).ToListAsync();
+    }
     public async Task<CourseDto?> GetCourseByIdAsync(int id)
     {
         var course = await _courseRepository.GetCourseWithDetailsAsync(id);

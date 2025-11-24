@@ -1,0 +1,24 @@
+﻿@model IEnumerable<OnlineLearningCenter.BusinessLogic.DTOs.CourseDto>
+@{
+    var student = ViewBag.Student as OnlineLearningCenter.BusinessLogic.DTOs.StudentDto;
+    ViewData["Title"] = "Запись на курс";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h4>Студент: @student.FullName</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <input type="hidden" name="studentId" value="@student.StudentId" />
+            <div class="mb-3">
+                <label for="courseId" class="form-label">Выберите курс</label>
+                <select name="courseId" class="form-select" asp-items="@(new SelectList(ViewBag.Courses, "CourseId", "Title"))"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Записать" class="btn btn-primary" />
+                <a asp-controller="Students" asp-action="Details" asp-route-id="@student.StudentId" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
