@@ -40,6 +40,11 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
             CreateMap<CreateStudentDto, Student>();
             CreateMap<StudentDto, UpdateStudentDto>();
             CreateMap<UpdateStudentDto, Student>();
+
+            CreateMap<Module, ModuleDto>();
+            CreateMap<CreateModuleDto, Module>();
+            CreateMap<ModuleDto, UpdateModuleDto>();
+            CreateMap<UpdateModuleDto, Module>();
         }
     }
 }

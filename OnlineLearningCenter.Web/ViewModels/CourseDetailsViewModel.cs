@@ -7,5 +7,7 @@ namespace OnlineLearningCenter.Web.ViewModels
         public CourseDto Course { get; set; }
 
         public CourseAnalyticsDto? Analytics { get; set; }
+
+        public IEnumerable<ModuleDto> Modules { get; set; }
     }
 }

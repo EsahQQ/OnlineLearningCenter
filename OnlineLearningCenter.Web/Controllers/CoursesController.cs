@@ -12,13 +12,15 @@ namespace OnlineLearningCenter.Web.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly IInstructorService _instructorService;
+        private readonly IModuleService _moduleService;
         private readonly IMapper _mapper;
 
-        public CoursesController(ICourseService courseService, IInstructorService instructorService, IMapper mapper)
+        public CoursesController(ICourseService courseService, IInstructorService instructorService, IMapper mapper, IModuleService moduleService)
         {
             _courseService = courseService;
             _instructorService = instructorService;
             _mapper = mapper;
+            _moduleService = moduleService;
         }
 
         // GET: Courses
@@ -61,10 +63,13 @@ namespace OnlineLearningCenter.Web.Controllers
 
             var analytics = await _courseService.GetCourseAnalyticsAsync(id.Value);
 
+            var modules = await _moduleService.GetModulesByCourseIdAsync(id.Value);
+
             var viewModel = new CourseDetailsViewModel
             {
                 Course = course,
-                Analytics = analytics
+                Analytics = analytics,
+                Modules = modules
             };
 
             return View(viewModel);

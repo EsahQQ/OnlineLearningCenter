@@ -80,6 +80,31 @@
     </div>
 }
 
+<hr />
+<h3>Модули курса</h3>
+<p>
+    <a asp-controller="Modules" asp-action="Create" asp-route-courseId="@Model.Course.CourseId" class="btn btn-success">
+        Добавить модуль
+    </a>
+</p>
+
+<table class="table">
+    <thead><tr><th>#</th><th>Название</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var module in Model.Modules)
+        {
+            <tr>
+                <td>@module.OrderNumber</td>
+                <td>@module.Title</td>
+                <td>
+                    <a asp-controller="Modules" asp-action="Edit" asp-route-id="@module.ModuleId">Редактировать</a> |
+                    <a asp-controller="Modules" asp-action="Delete" asp-route-id="@module.ModuleId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div class="mt-4">
     <a asp-action="Edit" asp-route-id="@Model.Course?.CourseId">Редактировать</a> |
     <a asp-action="Index">Назад к списку</a>
