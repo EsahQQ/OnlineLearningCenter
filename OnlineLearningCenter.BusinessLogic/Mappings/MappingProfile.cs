@@ -50,6 +50,17 @@ namespace OnlineLearningCenter.BusinessLogic.Mappings
             CreateMap<CreateTestDto, Test>();
             CreateMap<TestDto, UpdateTestDto>();
             CreateMap<UpdateTestDto, Test>();
+
+            CreateMap<TestResult, TestResultDto>()
+                .ForMember(dest => dest.StudentFullName,
+                           opt => opt.MapFrom(src => src.Student.FullName)
+                )
+                .ForMember(dest => dest.TestTitle,
+                           opt => opt.MapFrom(src => src.Test.Title)
+                )
+                .ForMember(dest => dest.CompletionDate,
+                           opt => opt.MapFrom(src => src.CompletionDate.ToString("dd.MM.yyyy"))
+                );
         }
     }
 }

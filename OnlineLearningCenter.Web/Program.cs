@@ -45,6 +45,7 @@ namespace OnlineLearningCenter.Web
             builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
             builder.Services.AddScoped<ITestService, TestService>();
+            builder.Services.AddScoped<ITestResultService, TestResultService>();
 
             builder.Services.AddControllersWithViews();
             #endregion
