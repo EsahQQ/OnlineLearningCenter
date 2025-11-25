@@ -23,9 +23,9 @@ public class UsersController : Controller
     }
 
     // GET: /Users
-    public async Task<IActionResult> Index()
+    public IActionResult Index() 
     {
-        var users = await _userManager.Users.ToListAsync();
+        var users = _userManager.Users.ToList(); 
         return View(users);
     }
 
