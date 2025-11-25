@@ -40,7 +40,7 @@ namespace OnlineLearningCenter.Web
                 options.UseSqlServer(identityConnectionString));
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>() 
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDataContext>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
