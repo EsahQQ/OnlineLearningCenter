@@ -8,7 +8,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services
     public interface IStudentService
     {
         Task<IEnumerable<StudentCourseProgressDto>> GetStudentProgressAsync(int studentId);
-        Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(int pageNumber);
+        Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(string? searchString, int pageNumber);
         Task<StudentDto?> GetStudentByIdAsync(int id);
         Task<StudentDto> CreateStudentAsync(CreateStudentDto studentDto);
         Task UpdateStudentAsync(UpdateStudentDto studentDto);

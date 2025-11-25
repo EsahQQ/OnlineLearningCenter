@@ -23,9 +23,12 @@ public class StudentsController : Controller
     }
 
     // GET: Students
-    public async Task<IActionResult> Index(int pageNumber = 1)
+    public async Task<IActionResult> Index(string? searchString, int pageNumber = 1)
     {
-        var students = await _studentService.GetPaginatedStudentsAsync(pageNumber);
+        var students = await _studentService.GetPaginatedStudentsAsync(searchString,pageNumber);
+
+        ViewData["CurrentFilter"] = searchString;
+
         return View(students);
     }
 

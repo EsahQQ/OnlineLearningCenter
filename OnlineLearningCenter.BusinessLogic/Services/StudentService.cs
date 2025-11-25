@@ -53,9 +53,14 @@ namespace OnlineLearningCenter.BusinessLogic.Services
         }
 
 
-        public async Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(int pageNumber)
+        public async Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(string? searchString, int pageNumber)
         {
             var query = _studentRepository.GetStudentsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(s => s.FullName.Contains(searchString));
+            }
 
             var dtoQuery = _mapper.ProjectTo<StudentDto>(query);
 

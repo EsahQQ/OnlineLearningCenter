@@ -34,10 +34,15 @@ public class CourseService : ICourseService
         await _courseRepository.DeleteAsync(id);
     }
 
-    public async Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(
+    public async Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(string? searchString,
         string? category, string? difficulty, int? instructorId, bool showOnlyActive, int pageNumber)
     {
         var query = _courseRepository.GetCoursesQueryable();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(c => c.Title.Contains(searchString));
+        }
 
         if (showOnlyActive) { query = query.Where(c => c.Status == "Активен"); }
         if (!string.IsNullOrEmpty(category)) { query = query.Where(c => c.Category == category); }

@@ -26,9 +26,9 @@ public class CoursesController : Controller
     }
 
     // GET: Courses
-    public async Task<IActionResult> Index(string? category, string? difficulty, int? instructorId, bool showOnlyActive = false, int pageNumber = 1)
+    public async Task<IActionResult> Index(string? searchString, string? category, string? difficulty, int? instructorId, bool showOnlyActive = false, int pageNumber = 1)
     {
-        var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(
+        var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(searchString,
             category, difficulty, instructorId, showOnlyActive, pageNumber);
 
         var instructors = await _instructorService.GetAllInstructorsForSelectListAsync();
@@ -41,6 +41,7 @@ public class CoursesController : Controller
 
         ViewBag.ShowOnlyActive = showOnlyActive;
 
+        ViewData["CurrentFilter"] = searchString;
         ViewData["CurrentCategory"] = category;
         ViewData["CurrentDifficulty"] = difficulty;
         ViewData["CurrentInstructorId"] = instructorId;

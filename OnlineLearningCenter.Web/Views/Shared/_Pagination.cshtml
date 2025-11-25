@@ -13,6 +13,11 @@
     {
         routeData["courseId"] = ViewData["CurrentCourseId"].ToString();
     }
+
+    if (ViewData["CurrentFilter"] != null)
+    {
+        routeData["searchString"] = ViewData["CurrentFilter"].ToString();
+    }
 }
 
 @if (Model.TotalPages > 1)

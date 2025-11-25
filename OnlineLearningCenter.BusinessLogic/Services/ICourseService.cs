@@ -7,7 +7,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services;
 
 public interface ICourseService
 {
-    Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(
+    Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(string? searchString,
         string? category, string? difficulty, int? instructorId, bool showOnlyActive, int pageNumber);
     Task<IEnumerable<CourseDto>> GetAllCoursesForSelectListAsync();
     Task<CourseDto?> GetCourseByIdAsync(int id);

@@ -7,7 +7,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services;
 
 public interface IInstructorService
 {
-    Task<PaginatedList<InstructorDto>> GetPaginatedInstructorsAsync(int pageNumber);
+    Task<PaginatedList<InstructorDto>> GetPaginatedInstructorsAsync(string? searchString, int pageNumber);
     Task<IEnumerable<InstructorDto>> GetAllInstructorsForSelectListAsync();
     Task<InstructorDto?> GetInstructorByIdAsync(int id);
     Task<InstructorDto> CreateInstructorAsync(CreateInstructorDto instructorDto);
