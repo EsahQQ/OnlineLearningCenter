@@ -19,25 +19,23 @@ namespace OnlineLearningCenter.Web
             IConfigurationRoot configuration = builder.Configuration.AddUserSecrets<Program>().Build();
 
             var appConnectionString = configuration.GetConnectionString("AppConnection");
-            string secretPass = configuration["Database:password"];
-            string secretUser = configuration["Database:login"];
             var appSqlBuilder = new SqlConnectionStringBuilder(appConnectionString)
             {
-                UserID = builder.Configuration["Database:AppUser"],
-                Password = builder.Configuration["Database:AppPassword"]
+                UserID = configuration["Database:login"],
+                Password = configuration["Database:password"]
             };
 
             var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
             var identitySqlBuilder = new SqlConnectionStringBuilder(identityConnectionString)
             {
-                UserID = builder.Configuration["Database:IdentityUser"],
-                Password = builder.Configuration["Database:IdentityPassword"]
+                UserID = configuration["Database:IdentityUser"],
+                Password = configuration["Database:IdentityPassword"]
             };
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(appConnectionString));
+                options.UseSqlServer(appSqlBuilder.ConnectionString));
             builder.Services.AddDbContext<IdentityDataContext>(options =>
-                options.UseSqlServer(identityConnectionString));
+                options.UseSqlServer(identitySqlBuilder.ConnectionString));
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
@@ -68,6 +66,14 @@ namespace OnlineLearningCenter.Web
             #endregion
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+
+                var seedTask = Data.IdentityDataInitializer.SeedRolesAndAdminUser(serviceProvider);
+                seedTask.Wait();
+            }
 
             // Настройка конвейера обработки HTTP-запросов (HTTP request pipeline)
             if (!app.Environment.IsDevelopment())
