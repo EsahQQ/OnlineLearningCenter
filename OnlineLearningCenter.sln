@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineLearningCenter.Busine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineLearningCenter.Web", "OnlineLearningCenter.Web\OnlineLearningCenter.Web.csproj", "{A78EAB35-404E-4ED9-819B-1972CB4A1317}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineLearningCenter.BusinessLogic.Tests", "OnlineLearningCenter.BusinessLogic.Tests\OnlineLearningCenter.BusinessLogic.Tests.csproj", "{A4224357-876D-4059-8CD5-918FB45FF0CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A78EAB35-404E-4ED9-819B-1972CB4A1317}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78EAB35-404E-4ED9-819B-1972CB4A1317}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A78EAB35-404E-4ED9-819B-1972CB4A1317}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4224357-876D-4059-8CD5-918FB45FF0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4224357-876D-4059-8CD5-918FB45FF0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4224357-876D-4059-8CD5-918FB45FF0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4224357-876D-4059-8CD5-918FB45FF0CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
