@@ -174,5 +174,21 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
             _mockCourseRepository.Verify(r => r.GetByIdAsync(courseId), Times.Once);
             _mockCourseRepository.Verify(r => r.UpdateAsync(It.Is<Entities.Course>(c => c.Title == "Updated Title")), Times.Once);
         }
+
+        [Fact]
+        public async Task UpdateCourseAsync_ShouldThrowKeyNotFoundException_WhenCourseDoesNotExist()
+        {
+            // Arrange
+            var courseId = 99; 
+            var updateDto = new UpdateCourseDto { CourseId = courseId };
+
+            _mockCourseRepository.Setup(r => r.GetByIdAsync(courseId)).ReturnsAsync((Entities.Course)null);
+
+            // Act
+            Func<Task> act = async () => await _courseService.UpdateCourseAsync(courseId, updateDto);
+
+            // Assert
+            await act.Should().ThrowAsync<KeyNotFoundException>();
+        }
     }
 }

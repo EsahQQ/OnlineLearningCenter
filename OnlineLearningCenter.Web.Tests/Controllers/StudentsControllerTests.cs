@@ -102,5 +102,25 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                   .Which.ActionName.Should().Be("Index");
         }
+
+        [Fact]
+        public async Task Details_ShouldSetViewBagCorrectly_WhenStudentExists()
+        {
+            // Arrange
+            var studentId = 1;
+            var studentDto = new StudentDto { StudentId = studentId, FullName = "Иван" };
+
+            _mockStudentService.Setup(s => s.GetStudentByIdAsync(studentId)).ReturnsAsync(studentDto);
+
+            _mockStudentService.Setup(s => s.GetStudentProgressAsync(studentId)).ReturnsAsync(new List<StudentCourseProgressDto>());
+            _mockCertificateService.Setup(s => s.GetCertificatesByStudentIdAsync(studentId)).ReturnsAsync(new List<CertificateDto>());
+
+            // Act
+            var result = await _controller.Details(studentId);
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            viewResult.ViewData["Student"].Should().Be(studentDto); 
+        }
     }
 }

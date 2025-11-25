@@ -96,4 +96,23 @@ public class UsersControllerTests
         var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject; 
         redirectResult.ActionName.Should().Be("Index");
     }
+
+    [Fact]
+    public async Task Delete_Post_ShouldNotDelete_WhenUserDeletesSelf()
+    {
+        // Arrange
+        var selfUserId = "1"; 
+        var userToDelete = _users.Find(u => u.Id == selfUserId);
+
+        _mockUserManager.Setup(m => m.FindByIdAsync(selfUserId)).ReturnsAsync(userToDelete);
+
+        _mockUserManager.Setup(m => m.GetUserId(It.IsAny<System.Security.Claims.ClaimsPrincipal>())).Returns(selfUserId);
+
+        // Act
+        var result = await _controller.DeleteConfirmed(selfUserId);
+
+        // Assert
+        _mockUserManager.Verify(x => x.DeleteAsync(It.IsAny<IdentityUser>()), Times.Never);
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be("Index");
+    }
 }
