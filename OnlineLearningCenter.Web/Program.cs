@@ -75,7 +75,7 @@ namespace OnlineLearningCenter.Web
                 seedTask.Wait();
             }
 
-            // Настройка конвейера обработки HTTP-запросов (HTTP request pipeline)
+            // РќР°СЃС‚СЂРѕР№РєР° РєРѕРЅРІРµР№РµСЂР° РѕР±СЂР°Р±РѕС‚РєРё HTTP-Р·Р°РїСЂРѕСЃРѕРІ (HTTP request pipeline)
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -88,6 +88,9 @@ namespace OnlineLearningCenter.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",
