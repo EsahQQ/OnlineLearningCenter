@@ -1,40 +1,61 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
+using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.BusinessLogic.Services;
-
 using OnlineLearningCenter.DataAccess.Interfaces;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
 using Entities = OnlineLearningCenter.DataAccess.Entities;
-
 
 namespace OnlineLearningCenter.BusinessLogic.Tests.Services
 {
     public class StudentServiceTests
     {
         private readonly Mock<IStudentRepository> _mockStudentRepository;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
         private readonly StudentService _studentService;
 
         public StudentServiceTests()
         {
             _mockStudentRepository = new Mock<IStudentRepository>();
-
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BusinessLogic.Mappings.MappingProfile>();
             });
             _mapper = mapperConfig.CreateMapper();
-
             _studentService = new StudentService(_mockStudentRepository.Object, _mapper);
+        }
+
+        [Fact]
+        public async Task GetPaginatedStudentsAsync_ShouldReturnPaginatedStudents()
+        {
+            // Arrange
+            var pageNumber = 1;
+            var pageSize = 10;
+            var students = new List<Entities.Student> { new Entities.Student { StudentId = 1, FullName = "Иван Иванов" } };
+
+            _mockStudentRepository.Setup(r => r.GetPaginatedStudentsAsync(null, pageNumber, pageSize))
+                .ReturnsAsync((students, 1));
+
+            // Act
+            var result = await _studentService.GetPaginatedStudentsAsync(null, pageNumber);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<PaginatedList<StudentDto>>();
+            result.TotalCount.Should().Be(1);
+            result.First().FullName.Should().Be("Иван Иванов");
         }
 
         [Fact]
         public async Task GetStudentProgressAsync_ShouldCalculateProgressAndScoreCorrectly()
         {
-            // Arrange 
+            // Arrange
             var studentId = 1;
-
             var student = new Entities.Student
             {
                 StudentId = studentId,
@@ -46,11 +67,7 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
                         Course = new Entities.Course
                         {
                             CourseId = 10, Title = "Курс по C#",
-                            Modules = new List<Entities.Module>
-                            {
-                                new Entities.Module { ModuleId = 101 },
-                                new Entities.Module { ModuleId = 102 }
-                            }
+                            Modules = new List<Entities.Module> { new Entities.Module { ModuleId = 101 } }
                         }
                     }
                 },
@@ -61,21 +78,43 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
                     new Entities.TestResult { Score = 100, Test = new Entities.Test { ModuleId = 999 } }
                 }
             };
-
             _mockStudentRepository.Setup(repo => repo.GetStudentWithProgressDataAsync(studentId)).ReturnsAsync(student);
 
             // Act
             var result = await _studentService.GetStudentProgressAsync(studentId);
 
-            // Assert 
-            result.Should().NotBeNull();
-            result.Should().HaveCount(1); 
-
+            // Assert
+            result.Should().NotBeNull().And.HaveCount(1);
             var courseProgress = result.First();
             courseProgress.CourseTitle.Should().Be("Курс по C#");
             courseProgress.ModulesCompletedProgress.Should().Be(50);
-
             courseProgress.AverageTestScore.Should().Be(85);
+        }
+
+        [Fact]
+        public async Task GetStudentRankingsAsync_ShouldReturnPaginatedAndSortedStudents()
+        {
+            // Arrange
+            var pageNumber = 1;
+            var pageSize = 10;
+            var student1 = new Entities.Student { StudentId = 1, FullName = "Отличник" };
+            var student2 = new Entities.Student { StudentId = 2, FullName = "Хорошист" };
+            var rankingData = new List<(Entities.Student, double)>
+            {
+                (student1, 95.5),
+                (student2, 80.0)
+            };
+
+            _mockStudentRepository.Setup(r => r.GetStudentRankingsAsync(null)).ReturnsAsync(rankingData);
+
+            // Act
+            var result = await _studentService.GetStudentRankingsAsync(null, pageNumber);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.TotalCount.Should().Be(2);
+            result.First().FullName.Should().Be("Отличник");
+            result.First().AverageScore.Should().Be(95.5);
         }
     }
 }

@@ -43,12 +43,12 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
             var paginatedList = new PaginatedList<CourseDto>(courseDtos, 2, 1, 10);
 
             _mockCourseService.Setup(s => s.GetPaginatedCoursesAsync(
-                It.IsAny<string>(),        
-                It.IsAny<string>(),        
-                It.IsAny<string>(),         
-                It.IsAny<int?>(),        
-                It.IsAny<bool>(),        
-                It.IsAny<int>())) 
+                It.IsAny<string>(), 
+                It.IsAny<string>(), 
+                It.IsAny<string>(),
+                It.IsAny<int?>(),   
+                It.IsAny<bool>(),  
+                It.IsAny<int>()))   
                 .ReturnsAsync(paginatedList);
 
             // Act
@@ -56,9 +56,7 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
 
             // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-
             var model = viewResult.Model.Should().BeOfType<PaginatedList<CourseDto>>().Subject;
-
             model.Should().HaveCount(2);
         }
 
@@ -73,7 +71,6 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
 
             _mockCourseService.Setup(s => s.GetCourseByIdAsync(courseId)).ReturnsAsync(courseDto);
             _mockCourseService.Setup(s => s.GetCourseAnalyticsAsync(courseId)).ReturnsAsync(analyticsDto);
-
             _mockModuleService.Setup(s => s.GetModulesByCourseIdAsync(courseId)).ReturnsAsync(modules);
 
             // Act
@@ -102,7 +99,7 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
         }
 
         [Fact]
-        public async Task Create_ShouldCallServiceAndRedirect_WhenModelStateIsValid()
+        public async Task Create_Post_ShouldCallServiceAndRedirect_WhenModelStateIsValid()
         {
             // Arrange
             var createCourseDto = new CreateCourseDto { Title = "New Course" };
@@ -112,28 +109,23 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
 
             // Assert
             _mockCourseService.Verify(s => s.CreateCourseAsync(createCourseDto), Times.Once);
-
             var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectResult.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public async Task Create_ShouldReturnView_WhenModelStateIsInvalid()
+        public async Task Create_Post_ShouldReturnViewWithModel_WhenModelStateIsInvalid()
         {
             // Arrange
-            var createCourseDto = new CreateCourseDto(); 
-
+            var createCourseDto = new CreateCourseDto();
             _controller.ModelState.AddModelError("Title", "Title is required");
 
             // Act
             var result = await _controller.Create(createCourseDto);
 
             // Assert
-
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-
             viewResult.Model.Should().Be(createCourseDto);
-
             _mockCourseService.Verify(s => s.CreateCourseAsync(It.IsAny<CreateCourseDto>()), Times.Never);
         }
     }

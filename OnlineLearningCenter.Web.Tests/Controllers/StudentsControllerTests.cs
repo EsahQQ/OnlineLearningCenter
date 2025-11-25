@@ -7,6 +7,7 @@ using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.BusinessLogic.Services;
 using OnlineLearningCenter.Web.Controllers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -49,13 +50,39 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
         }
 
         [Fact]
+        public async Task Details_ShouldReturnViewWithProgress_WhenStudentExists()
+        {
+            // Arrange
+            var studentId = 1;
+            var studentDto = new StudentDto { StudentId = studentId, FullName = "Test Student" };
+            var progressList = new List<StudentCourseProgressDto> { new StudentCourseProgressDto() };
+            var certificates = new List<CertificateDto>();
+
+            _mockStudentService.Setup(s => s.GetStudentByIdAsync(studentId)).ReturnsAsync(studentDto);
+            _mockStudentService.Setup(s => s.GetStudentProgressAsync(studentId)).ReturnsAsync(progressList);
+            _mockCertificateService.Setup(s => s.GetCertificatesByStudentIdAsync(studentId)).ReturnsAsync(certificates);
+
+            // Act
+            var result = await _controller.Details(studentId);
+
+            // Assert
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var model = viewResult.Model.Should().BeAssignableTo<IEnumerable<StudentCourseProgressDto>>().Subject;
+            model.Should().BeSameAs(progressList);
+
+            viewResult.ViewData["Student"].Should().Be(studentDto);
+            viewResult.ViewData["Certificates"].Should().Be(certificates);
+        }
+
+        [Fact]
         public async Task Details_ShouldReturnNotFound_WhenStudentDoesNotExist()
         {
             // Arrange
             _mockStudentService.Setup(s => s.GetStudentByIdAsync(It.IsAny<int>())).ReturnsAsync((StudentDto)null);
 
             // Act
-            var result = await _controller.Details(99); 
+            var result = await _controller.Details(99);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
