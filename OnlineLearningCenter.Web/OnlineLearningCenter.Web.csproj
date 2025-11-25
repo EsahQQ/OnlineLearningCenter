@@ -22,4 +22,8 @@
     <ProjectReference Include="..\OnlineLearningCenter.BusinessLogic\OnlineLearningCenter.BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Data\" />
+  </ItemGroup>
+
 </Project>

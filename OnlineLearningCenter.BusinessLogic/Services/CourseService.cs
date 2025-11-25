@@ -34,33 +34,32 @@ public class CourseService : ICourseService
         await _courseRepository.DeleteAsync(id);
     }
 
-    public async Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(string? searchString,
-        string? category, string? difficulty, int? instructorId, bool showOnlyActive, int pageNumber)
+    public async Task<PaginatedList<CourseDto>> GetPaginatedCoursesAsync(
+        string? searchString,
+        string? category,
+        string? difficulty,
+        int? instructorId,
+        bool showOnlyActive,
+        int pageNumber)
     {
-        var query = _courseRepository.GetCoursesQueryable();
+        // 1. Вызываем новый метод репозитория
+        var (courses, totalCount) = await _courseRepository.GetPaginatedCoursesAsync(
+            searchString, category, difficulty, instructorId, showOnlyActive, pageNumber, PageSize);
 
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            query = query.Where(c => c.Title.Contains(searchString));
-        }
+        // 2. Мапим полученный список Entity в список DTO
+        var dtos = _mapper.Map<List<CourseDto>>(courses);
 
-        if (showOnlyActive) { query = query.Where(c => c.Status == "Активен"); }
-        if (!string.IsNullOrEmpty(category)) { query = query.Where(c => c.Category == category); }
-        if (!string.IsNullOrEmpty(difficulty)) { query = query.Where(c => c.Difficulty == difficulty); }
-        if (instructorId.HasValue) { query = query.Where(c => c.InstructorId == instructorId.Value); }
-
-        var dtoQuery = _mapper.ProjectTo<CourseDto>(query);
-
-        return await PaginatedList<CourseDto>.CreateAsync(dtoQuery, pageNumber, PageSize);
+        // 3. Создаем и возвращаем PaginatedList
+        return new PaginatedList<CourseDto>(dtos, totalCount, pageNumber, PageSize);
     }
 
     public async Task<IEnumerable<CourseDto>> GetAllCoursesForSelectListAsync()
     {
-        var query = _courseRepository.GetCoursesQueryable();
-        query = query.OrderBy(c => c.Title);
-
-        return await _mapper.ProjectTo<CourseDto>(query).ToListAsync();
+        // Используем новый, простой метод
+        var courses = await _courseRepository.GetAllCoursesAsync();
+        return _mapper.Map<IEnumerable<CourseDto>>(courses);
     }
+
     public async Task<CourseDto?> GetCourseByIdAsync(int id)
     {
         var course = await _courseRepository.GetCourseWithDetailsAsync(id);

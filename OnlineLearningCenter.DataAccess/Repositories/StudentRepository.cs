@@ -44,8 +44,46 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
             .Select(r => new ValueTuple<Student, double>(r.Student, r.AverageScore)); 
     }
 
-    public IQueryable<Student> GetStudentsQueryable()
+    public async Task<(List<Student> Items, int TotalCount)> GetPaginatedStudentsAsync(string? searchString, int pageNumber, int pageSize)
     {
-        return _context.Students.AsNoTracking();
+        var query = _context.Students.AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(s => s.FullName.Contains(searchString));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(s => s.FullName)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    public async Task<List<(Student Student, double AverageScore)>> GetStudentRankingsAsync(int? courseId)
+    {
+        var query = _context.TestResults.AsQueryable();
+
+        if (courseId.HasValue)
+        {
+            query = query.Where(tr => tr.Test.Module.CourseId == courseId.Value);
+        }
+
+        var rankingData = await query
+            .Include(tr => tr.Student)
+            .GroupBy(tr => tr.Student)
+            .Select(g => new {
+                Student = g.Key,
+                AverageScore = g.Average(tr => tr.Score)
+            })
+            .OrderByDescending(r => r.AverageScore)
+            .ToListAsync();
+
+        return rankingData.Select(r => (r.Student, r.AverageScore)).ToList();
     }
 }

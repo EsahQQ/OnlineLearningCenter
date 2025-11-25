@@ -55,16 +55,9 @@ namespace OnlineLearningCenter.BusinessLogic.Services
 
         public async Task<PaginatedList<StudentDto>> GetPaginatedStudentsAsync(string? searchString, int pageNumber)
         {
-            var query = _studentRepository.GetStudentsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(s => s.FullName.Contains(searchString));
-            }
-
-            var dtoQuery = _mapper.ProjectTo<StudentDto>(query);
-
-            return await PaginatedList<StudentDto>.CreateAsync(dtoQuery.OrderBy(s => s.FullName), pageNumber, PageSize);
+            var (students, totalCount) = await _studentRepository.GetPaginatedStudentsAsync(searchString, pageNumber, PageSize);
+            var dtos = _mapper.Map<List<StudentDto>>(students);
+            return new PaginatedList<StudentDto>(dtos, totalCount, pageNumber, PageSize);
         }
 
         public async Task<StudentDto?> GetStudentByIdAsync(int id)
@@ -99,16 +92,19 @@ namespace OnlineLearningCenter.BusinessLogic.Services
 
         public async Task<PaginatedList<StudentRankingDto>> GetStudentRankingsAsync(int? courseId, int pageNumber)
         {
-            var query = _studentRepository.GetStudentRankingsQueryable(courseId);
+            var rankings = await _studentRepository.GetStudentRankingsAsync(courseId);
 
-            var dtoQuery = query.Select(r => new StudentRankingDto
+            var dtos = rankings.Select(r => new StudentRankingDto
             {
                 StudentId = r.Student.StudentId,
                 FullName = r.Student.FullName,
                 AverageScore = r.AverageScore
-            });
+            }).ToList();
 
-            return await PaginatedList<StudentRankingDto>.CreateAsync(dtoQuery, pageNumber, PageSize);
+            var totalCount = dtos.Count;
+            var items = dtos.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
+
+            return new PaginatedList<StudentRankingDto>(items, totalCount, pageNumber, PageSize);
         }
     }
 }

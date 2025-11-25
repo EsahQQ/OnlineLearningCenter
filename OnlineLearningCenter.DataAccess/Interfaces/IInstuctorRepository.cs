@@ -4,5 +4,5 @@ namespace OnlineLearningCenter.DataAccess.Interfaces;
 
 public interface IInstructorRepository : IGenericRepository<Instructor> 
 {
-    IQueryable<Instructor> GetInstructorsQueryable();
+    Task<(List<Instructor> Items, int TotalCount)> GetPaginatedInstructorsAsync(string? searchString, int pageNumber, int pageSize);
 }

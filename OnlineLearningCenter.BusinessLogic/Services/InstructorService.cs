@@ -22,15 +22,9 @@ public class InstructorService : IInstructorService
 
     public async Task<PaginatedList<InstructorDto>> GetPaginatedInstructorsAsync(string? searchString, int pageNumber)
     {
-        var query = _instructorRepository.GetInstructorsQueryable();
-
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            query = query.Where(i => i.FullName.Contains(searchString));
-        }
-
-        var dtoQuery = _mapper.ProjectTo<InstructorDto>(query);
-        return await PaginatedList<InstructorDto>.CreateAsync(dtoQuery.OrderBy(i => i.FullName), pageNumber, PageSize);
+        var (instructors, totalCount) = await _instructorRepository.GetPaginatedInstructorsAsync(searchString, pageNumber, PageSize);
+        var dtos = _mapper.Map<List<InstructorDto>>(instructors);
+        return new PaginatedList<InstructorDto>(dtos, totalCount, pageNumber, PageSize);
     }
 
     public async Task<IEnumerable<InstructorDto>> GetAllInstructorsForSelectListAsync()

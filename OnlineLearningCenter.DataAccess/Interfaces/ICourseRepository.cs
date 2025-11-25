@@ -10,5 +10,13 @@ public interface ICourseRepository : IGenericRepository<Course>
     Task<IEnumerable<string>> GetAllCategoriesAsync();
     Task<IEnumerable<string>> GetAllDifficultiesAsync();
     Task<Course?> GetCourseForAnalyticsAsync(int courseId);
-    IQueryable<Course> GetCoursesQueryable();
+    Task<(List<Course> Items, int TotalCount)> GetPaginatedCoursesAsync(
+            string? searchString,
+            string? category,
+            string? difficulty,
+            int? instructorId,
+            bool showOnlyActive,
+            int pageNumber,
+            int pageSize);
+    Task<List<Course>> GetAllCoursesAsync();
 }

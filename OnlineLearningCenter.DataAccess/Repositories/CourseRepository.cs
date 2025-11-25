@@ -52,8 +52,57 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
             .FirstOrDefaultAsync(c => c.CourseId == courseId);
     }
 
-    public IQueryable<Course> GetCoursesQueryable()
+    public async Task<(List<Course> Items, int TotalCount)> GetPaginatedCoursesAsync(
+        string? searchString,
+        string? category,
+        string? difficulty,
+        int? instructorId,
+        bool showOnlyActive,
+        int pageNumber,
+        int pageSize)
     {
-        return _context.Courses.Include(c => c.Instructor).AsNoTracking();
+
+        var query = _context.Courses.Include(c => c.Instructor).AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(c => c.Title.Contains(searchString));
+        }
+        if (showOnlyActive)
+        {
+            query = query.Where(c => c.Status == "Активен");
+        }
+        if (!string.IsNullOrEmpty(category))
+        {
+            query = query.Where(c => c.Category == category);
+        }
+        if (!string.IsNullOrEmpty(difficulty))
+        {
+            query = query.Where(c => c.Difficulty == difficulty);
+        }
+        if (instructorId.HasValue)
+        {
+            query = query.Where(c => c.InstructorId == instructorId.Value);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(c => c.Title) 
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    public async Task<List<Course>> GetAllCoursesAsync()
+    {
+        return await _context.Courses
+            .Include(c => c.Instructor)
+            .AsNoTracking()
+            .OrderBy(c => c.Title)
+            .ToListAsync();
     }
 }
