@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers;
 
+[Authorize]
 public class CertificatesController : Controller
 {
     private readonly ICertificateService _certificateService;
@@ -39,6 +41,7 @@ public class CertificatesController : Controller
     // POST: Certificates/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(CreateCertificateDto certificateDto)
     {
         if (ModelState.IsValid)
@@ -56,6 +59,7 @@ public class CertificatesController : Controller
     }
 
     // GET: Certificates/Edit/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null) return NotFound();
@@ -72,6 +76,7 @@ public class CertificatesController : Controller
     // POST: Certificates/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, UpdateCertificateDto certificateDto)
     {
         if (id != certificateDto.CertificateId) return NotFound();
@@ -90,6 +95,7 @@ public class CertificatesController : Controller
     }
 
     // GET: Certificates/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
@@ -101,6 +107,7 @@ public class CertificatesController : Controller
     // POST: Certificates/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int certificateId, int studentId)
     {
         await _certificateService.DeleteCertificateAsync(certificateId);

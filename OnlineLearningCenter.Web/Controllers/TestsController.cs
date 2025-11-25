@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers;
 
+[Authorize]
 public class TestsController : Controller
 {
     private readonly ITestService _testService;
@@ -37,6 +39,7 @@ public class TestsController : Controller
     }
 
     // GET: Tests/Create?moduleId=5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(int moduleId)
     {
         var module = await _moduleService.GetModuleByIdAsync(moduleId);
@@ -52,6 +55,7 @@ public class TestsController : Controller
     // POST: Tests/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(CreateTestDto testDto)
     {
         if (ModelState.IsValid)
@@ -67,6 +71,7 @@ public class TestsController : Controller
     }
 
     // GET: Tests/Edit/1
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null) return NotFound();
@@ -85,6 +90,7 @@ public class TestsController : Controller
     // POST: Tests/Edit/1
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, UpdateTestDto testDto)
     {
         if (id != testDto.TestId) return NotFound();
@@ -102,6 +108,7 @@ public class TestsController : Controller
     }
 
     // GET: Tests/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
@@ -118,6 +125,7 @@ public class TestsController : Controller
     // POST: Tests/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int testId, int moduleId)
     {
         await _testService.DeleteTestAsync(testId);

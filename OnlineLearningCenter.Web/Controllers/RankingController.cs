@@ -1,37 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineLearningCenter.BusinessLogic.Services;
 using System.Threading.Tasks;
 
-namespace OnlineLearningCenter.Web.Controllers
+namespace OnlineLearningCenter.Web.Controllers;
+
+[Authorize]
+public class RankingController : Controller
 {
-    public class RankingController : Controller
+    private readonly IStudentService _studentService;
+    private readonly ICourseService _courseService;
+
+    public RankingController(IStudentService studentService, ICourseService courseService)
     {
-        private readonly IStudentService _studentService;
-        private readonly ICourseService _courseService;
+        _studentService = studentService;
+        _courseService = courseService;
+    }
 
-        public RankingController(IStudentService studentService, ICourseService courseService)
+    public async Task<IActionResult> Index(int? courseId, int pageNumber = 1)
+    {
+        var rankings = await _studentService.GetStudentRankingsAsync(courseId, pageNumber);
+
+        var allCourses = await _courseService.GetAllCoursesForSelectListAsync();
+        ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", courseId);
+
+        ViewData["CurrentCourseId"] = courseId;
+
+        if (courseId.HasValue)
         {
-            _studentService = studentService;
-            _courseService = courseService;
+            var selectedCourse = allCourses.FirstOrDefault(c => c.CourseId == courseId.Value);
+            ViewBag.SelectedCourseTitle = selectedCourse?.Title;
         }
 
-        public async Task<IActionResult> Index(int? courseId, int pageNumber = 1)
-        {
-            var rankings = await _studentService.GetStudentRankingsAsync(courseId, pageNumber);
-
-            var allCourses = await _courseService.GetAllCoursesForSelectListAsync();
-            ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", courseId);
-
-            ViewData["CurrentCourseId"] = courseId;
-
-            if (courseId.HasValue)
-            {
-                var selectedCourse = allCourses.FirstOrDefault(c => c.CourseId == courseId.Value);
-                ViewBag.SelectedCourseTitle = selectedCourse?.Title;
-            }
-
-            return View(rankings);
-        }
+        return View(rankings);
     }
 }

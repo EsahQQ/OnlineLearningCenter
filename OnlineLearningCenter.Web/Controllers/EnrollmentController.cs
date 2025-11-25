@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.Services;
 using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers;
 
+[Authorize]
 public class EnrollmentsController : Controller
 {
     private readonly IEnrollmentService _enrollmentService;
@@ -33,6 +35,7 @@ public class EnrollmentsController : Controller
     // POST: /Enrollments/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(int studentId, int courseId)
     {
         await _enrollmentService.EnrollStudentAsync(studentId, courseId);
@@ -42,6 +45,7 @@ public class EnrollmentsController : Controller
     // POST: /Enrollments/Delete
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int studentId, int courseId)
     {
         await _enrollmentService.UnenrollStudentAsync(studentId, courseId);

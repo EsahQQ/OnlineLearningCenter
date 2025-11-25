@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers;
 
+[Authorize]
 public class ModulesController : Controller
 {
     private readonly IModuleService _moduleService;
@@ -35,6 +37,7 @@ public class ModulesController : Controller
     // POST: Modules/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(CreateModuleDto moduleDto)
     {
         if (ModelState.IsValid)
@@ -50,6 +53,7 @@ public class ModulesController : Controller
     }
 
     // GET: Modules/Edit/1
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var module = await _moduleService.GetModuleByIdAsync(id);
@@ -66,6 +70,7 @@ public class ModulesController : Controller
     // POST: Modules/Edit/1
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, UpdateModuleDto moduleDto)
     {
         if (id != moduleDto.ModuleId) return NotFound();
@@ -83,6 +88,7 @@ public class ModulesController : Controller
     }
 
     // GET: Modules/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
@@ -99,6 +105,7 @@ public class ModulesController : Controller
     // POST: Modules/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id, int courseId) 
     {
         await _moduleService.DeleteModuleAsync(id);
