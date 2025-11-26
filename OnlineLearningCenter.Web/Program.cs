@@ -64,12 +64,12 @@ namespace OnlineLearningCenter.Web
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDistributedMemoryCache(); // Регистрирует хранилище для сессий в памяти
+            builder.Services.AddDistributedMemoryCache(); 
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(20); // Время жизни сессии
-                options.Cookie.HttpOnly = true; // Доступ к cookie только через HTTP
-                options.Cookie.IsEssential = true; // Важно для GDPR
+                options.IdleTimeout = TimeSpan.FromMinutes(20); 
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true; 
             });
             #endregion
 
