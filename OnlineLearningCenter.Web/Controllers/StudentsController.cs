@@ -23,11 +23,24 @@ public class StudentsController : Controller
     }
 
     // GET: Students
-    public async Task<IActionResult> Index(string? searchString, int pageNumber = 1)
+    public async Task<IActionResult> Index(string? searchString, int pageNumber = 1, string? clearFilter = null)
     {
-        var students = await _studentService.GetPaginatedStudentsAsync(searchString,pageNumber);
+        if (clearFilter != null)
+        {
+            HttpContext.Session.Remove("Students_Search");
+            return RedirectToAction(nameof(Index));
+        }
 
-        ViewData["CurrentFilter"] = searchString;
+        if (searchString != null)
+        {
+            HttpContext.Session.SetString("Students_Search", searchString);
+        }
+
+        var finalSearchString = searchString ?? HttpContext.Session.GetString("Students_Search");
+
+        var students = await _studentService.GetPaginatedStudentsAsync(finalSearchString, pageNumber);
+
+        ViewData["CurrentFilter"] = finalSearchString;
 
         return View(students);
     }
