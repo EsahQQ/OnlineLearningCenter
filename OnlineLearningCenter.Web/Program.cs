@@ -63,6 +63,14 @@ namespace OnlineLearningCenter.Web
             builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDistributedMemoryCache(); // Регистрирует хранилище для сессий в памяти
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20); // Время жизни сессии
+                options.Cookie.HttpOnly = true; // Доступ к cookie только через HTTP
+                options.Cookie.IsEssential = true; // Важно для GDPR
+            });
             #endregion
 
             var app = builder.Build();
@@ -87,7 +95,10 @@ namespace OnlineLearningCenter.Web
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseSession();
+
             app.UseAuthorization();
 
             app.MapRazorPages();
