@@ -26,26 +26,53 @@ public class CoursesController : Controller
     }
 
     // GET: Courses
-    public async Task<IActionResult> Index(string? searchString, string? category, string? difficulty, int? instructorId, bool showOnlyActive = false, int pageNumber = 1)
+    public async Task<IActionResult> Index(
+        string? searchString,
+        string? category,
+        string? difficulty,
+        int? instructorId,
+        bool? showOnlyActive,
+        int pageNumber = 1,
+        string? clearFilter = null)
     {
-        var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(searchString,
-            category, difficulty, instructorId, showOnlyActive, pageNumber);
+
+        if (clearFilter != null)
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction(nameof(Index));
+        }
+
+        if (searchString != null) HttpContext.Session.SetString("Courses_Search", searchString);
+        if (category != null) HttpContext.Session.SetString("Courses_Category", category);
+        if (difficulty != null) HttpContext.Session.SetString("Courses_Difficulty", difficulty);
+        if (instructorId != null) HttpContext.Session.SetInt32("Courses_InstructorId", instructorId.Value);
+        if (showOnlyActive != null) HttpContext.Session.SetString("Courses_ShowActive", showOnlyActive.Value.ToString());
+
+        var finalSearchString = searchString ?? HttpContext.Session.GetString("Courses_Search");
+        var finalCategory = category ?? HttpContext.Session.GetString("Courses_Category");
+        var finalDifficulty = difficulty ?? HttpContext.Session.GetString("Courses_Difficulty");
+        var finalInstructorId = instructorId ?? HttpContext.Session.GetInt32("Courses_InstructorId");
+
+        var showActiveString = HttpContext.Session.GetString("Courses_ShowActive");
+        var finalShowOnlyActive = showOnlyActive ?? (showActiveString != null ? bool.Parse(showActiveString) : true); // По умолчанию true
+
+        var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(finalSearchString,
+            finalCategory, finalDifficulty, finalInstructorId, finalShowOnlyActive, pageNumber);
 
         var instructors = await _instructorService.GetAllInstructorsForSelectListAsync();
         var categories = await _courseService.GetAllCategoriesAsync();
         var difficulties = await _courseService.GetAllDifficultiesAsync();
 
-        ViewBag.Instructors = new SelectList(instructors, "InstructorId", "FullName", instructorId);
-        ViewBag.Categories = new SelectList(categories, category);
-        ViewBag.Difficulties = new SelectList(difficulties, difficulty);
+        ViewBag.Instructors = new SelectList(instructors, "InstructorId", "FullName", finalInstructorId);
+        ViewBag.Categories = new SelectList(categories, finalCategory);
+        ViewBag.Difficulties = new SelectList(difficulties, finalDifficulty);
+        ViewBag.ShowOnlyActive = finalShowOnlyActive;
 
-        ViewBag.ShowOnlyActive = showOnlyActive;
-
-        ViewData["CurrentFilter"] = searchString;
-        ViewData["CurrentCategory"] = category;
-        ViewData["CurrentDifficulty"] = difficulty;
-        ViewData["CurrentInstructorId"] = instructorId;
-        ViewData["CurrentShowOnlyActive"] = showOnlyActive;
+        ViewData["CurrentFilter"] = finalSearchString;
+        ViewData["CurrentCategory"] = finalCategory;
+        ViewData["CurrentDifficulty"] = finalDifficulty;
+        ViewData["CurrentInstructorId"] = finalInstructorId;
+        ViewData["CurrentShowOnlyActive"] = finalShowOnlyActive;
 
         return View(paginatedCourses);
     }
