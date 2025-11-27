@@ -5,5 +5,3 @@
 }
 
 [![Build and Publish for coursework](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml/badge.svg)](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml)
-
-![Error photo](img/Error.png)
