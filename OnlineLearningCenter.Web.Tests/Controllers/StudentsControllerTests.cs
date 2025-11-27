@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using OnlineLearningCenter.BusinessLogic.DTOs;
@@ -30,6 +31,15 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
                 _mockStudentService.Object,
                 _mockMapper.Object,
                 _mockCertificateService.Object);
+
+            var mockSession = new Mock<ISession>();
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.Setup(ctx => ctx.Session).Returns(mockSession.Object);
+
+            _controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = mockHttpContext.Object
+            };
         }
 
         [Fact]

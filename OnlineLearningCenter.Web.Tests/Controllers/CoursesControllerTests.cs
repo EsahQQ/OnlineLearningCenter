@@ -10,6 +10,7 @@ using OnlineLearningCenter.Web.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using Microsoft.AspNetCore.Http;
 
 namespace OnlineLearningCenter.Web.Tests.Controllers
 {
@@ -33,6 +34,15 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
                 _mockInstructorService.Object,
                 _mockMapper.Object,
                 _mockModuleService.Object);
+
+            var mockSession = new Mock<ISession>();
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.Setup(ctx => ctx.Session).Returns(mockSession.Object);
+
+            _controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = mockHttpContext.Object
+            };
         }
 
         [Fact]
