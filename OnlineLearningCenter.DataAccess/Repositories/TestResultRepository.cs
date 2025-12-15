@@ -10,15 +10,23 @@ public class TestResultRepository : GenericRepository<TestResult>, ITestResultRe
     public TestResultRepository(ApplicationDbContext context) : base(context)
     {
     }
-    public async Task<IEnumerable<TestResult>> GetResultsByTestIdWithDetailsAsync(int testId)
+    public async Task<(List<TestResult> Items, int TotalCount)> GetPaginatedResultsByTestIdAsync(int testId, int pageNumber, int pageSize)
     {
-        return await _context.TestResults
-            .Include(tr => tr.Student)
-            .Include(tr => tr.Test)
+        var query = _context.TestResults
             .Where(tr => tr.TestId == testId)
+            .Include(tr => tr.Student)
+            .Include(tr => tr.Test);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
             .OrderByDescending(tr => tr.Score)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .AsNoTracking()
             .ToListAsync();
+
+        return (items, totalCount);
     }
 
     public async Task<IEnumerable<TestResult>> GetResultsForTestAsync(int testId)

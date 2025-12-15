@@ -18,6 +18,6 @@
 <form asp-action="Delete">
     <input type="hidden" asp-for="CertificateId" name="certificateId" />
     <input type="hidden" name="studentId" value="@Model.StudentId" />
-    <input type="submit" value="Аннулировать" class="btn btn-danger" /> |
-    <a asp-controller="Students" asp-action="Details" asp-route-id="@Model.StudentId">Отмена</a>
+    <input type="submit" value="Аннулировать" class="btn btn-danger" /> 
+    <a asp-controller="Students" asp-action="Details" asp-route-id="@Model.StudentId" class="btn btn-secondary">Отмена</a>
 </form>

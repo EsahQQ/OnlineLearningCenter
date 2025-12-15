@@ -25,7 +25,7 @@ namespace OnlineLearningCenter.Web.Controllers
         }
 
         // GET: /TestResults?testId=10
-        public async Task<IActionResult> Index(int testId)
+        public async Task<IActionResult> Index(int testId, int pageNumber = 1)
         {
             var test = await _testService.GetTestByIdAsync(testId);
             if (test == null) return NotFound("Тест не найден");
@@ -34,7 +34,10 @@ namespace OnlineLearningCenter.Web.Controllers
             ViewBag.ModuleId = test.ModuleId;
             ViewBag.TestId = test.TestId;
 
-            var results = await _resultService.GetResultsByTestIdAsync(testId);
+            var results = await _resultService.GetPaginatedResultsByTestIdAsync(testId, pageNumber);
+
+            ViewData["CurrentTestId"] = testId;
+
             return View(results);
         }
 

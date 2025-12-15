@@ -29,6 +29,11 @@
     {
         routeData["courseId"] = ViewData["CurrentCourseId"].ToString();
     }
+
+    if (ViewData["CurrentTestId"] != null)
+    {
+        routeData["testId"] = ViewData["CurrentTestId"].ToString();
+    }
 }
 
 

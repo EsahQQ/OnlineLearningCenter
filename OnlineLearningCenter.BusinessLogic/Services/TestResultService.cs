@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineLearningCenter.BusinessLogic.DTOs;
+using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class TestResultService : ITestResultService
 {
     private readonly ITestResultRepository _resultRepository;
     private readonly IMapper _mapper;
+    private const int PageSize = 10;
 
     public TestResultService(ITestResultRepository resultRepository, IMapper mapper)
     {
@@ -17,10 +19,11 @@ public class TestResultService : ITestResultService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<TestResultDto>> GetResultsByTestIdAsync(int testId)
+    public async Task<PaginatedList<TestResultDto>> GetPaginatedResultsByTestIdAsync(int testId, int pageNumber)
     {
-        var results = await _resultRepository.GetResultsByTestIdWithDetailsAsync(testId);
-        return _mapper.Map<IEnumerable<TestResultDto>>(results);
+        var (results, totalCount) = await _resultRepository.GetPaginatedResultsByTestIdAsync(testId, pageNumber, PageSize);
+        var dtos = _mapper.Map<List<TestResultDto>>(results);
+        return new PaginatedList<TestResultDto>(dtos, totalCount, pageNumber, PageSize);
     }
 
     public async Task CreateResultAsync(CreateTestResultDto dto)

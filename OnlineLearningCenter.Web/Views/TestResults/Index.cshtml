@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TestResultDto>
+﻿@model OnlineLearningCenter.BusinessLogic.Helpers.PaginatedList<OnlineLearningCenter.BusinessLogic.DTOs.TestResultDto>
 
 @{
     ViewData["Title"] = "Результаты теста";
@@ -48,6 +48,8 @@
         }
     </tbody>
 </table>
+
+<partial name="_Pagination" model="Model" />
 
 <div class="mt-3">
     <a asp-controller="Tests" asp-action="Index" asp-route-moduleId="@ViewBag.ModuleId" class="btn btn-secondary">Назад к списку тестов</a>
