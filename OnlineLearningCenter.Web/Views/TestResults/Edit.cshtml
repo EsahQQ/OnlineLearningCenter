@@ -1,0 +1,25 @@
+﻿@model UpdateTestResultDto
+@{
+    ViewData["Title"] = "Редактирование результата";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h4>Тест: "@ViewBag.TestTitle"</h4>
+<h5>Студент: @ViewBag.StudentFullName</h5>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="TestResultId" />
+            <div class="mb-3">
+                <label asp-for="Score" class="form-label">Балл</label>
+                <input asp-for="Score" class="form-control" type="number" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <a asp-action="Index" asp-route-testId="@ViewBag.TestId" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>

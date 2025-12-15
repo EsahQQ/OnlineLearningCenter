@@ -14,5 +14,6 @@ namespace OnlineLearningCenter.BusinessLogic.Services
         Task UpdateStudentAsync(UpdateStudentDto studentDto);
         Task DeleteStudentAsync(int id);
         Task<PaginatedList<StudentRankingDto>> GetStudentRankingsAsync(int? courseId, int pageNumber);
+        Task<IEnumerable<StudentDto>> GetStudentsAvailableForTestAsync(int testId);
     }
 }

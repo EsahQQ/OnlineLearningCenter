@@ -1,0 +1,22 @@
+﻿@model TestResultDto
+@{
+    ViewData["Title"] = "Удаление результата";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h3>Вы уверены, что хотите удалить этот результат?</h3>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Тест</dt>
+    <dd class="col-sm-9">@Model.TestTitle</dd>
+    <dt class="col-sm-3">Студент</dt>
+    <dd class="col-sm-9">@Model.StudentFullName</dd>
+    <dt class="col-sm-3">Балл</dt>
+    <dd class="col-sm-9">@Model.Score</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="TestResultId" name="testResultId" />
+    <input type="submit" value="Удалить" class="btn btn-danger" /> |
+    <a asp-action="Index" asp-route-testId="@Model.TestId" class="btn btn-secondary">Отмена</a>
+</form>

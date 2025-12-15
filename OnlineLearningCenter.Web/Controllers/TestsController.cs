@@ -13,15 +13,12 @@ public class TestsController : Controller
     private readonly ITestService _testService;
     private readonly IModuleService _moduleService;
     private readonly IMapper _mapper;
-    private readonly ITestResultService _resultService;
 
-    public TestsController(ITestService testService, IModuleService moduleService, IMapper mapper, ITestResultService resultService)
+    public TestsController(ITestService testService, IModuleService moduleService, IMapper mapper)
     {
         _testService = testService;
         _moduleService = moduleService;
         _mapper = mapper;
-        _resultService = resultService;
-        _resultService = resultService;
     }
 
     // GET: /Tests?moduleId=5
@@ -130,18 +127,5 @@ public class TestsController : Controller
     {
         await _testService.DeleteTestAsync(testId);
         return RedirectToAction("Index", new { moduleId = moduleId });
-    }
-
-    // GET: Tests/Results?testId=10
-    public async Task<IActionResult> Results(int testId)
-    {
-        var test = await _testService.GetTestByIdAsync(testId);
-        if (test == null) return NotFound("Тест не найден");
-
-        ViewBag.TestTitle = test.Title;
-        ViewBag.ModuleId = test.ModuleId;
-
-        var results = await _resultService.GetResultsByTestIdAsync(testId);
-        return View(results);
     }
 }

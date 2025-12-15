@@ -3,6 +3,7 @@ using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
+using OnlineLearningCenter.DataAccess.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,12 +13,18 @@ namespace OnlineLearningCenter.BusinessLogic.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly ITestRepository _testRepository;
+        private readonly IModuleRepository _moduleRepository;
+        private readonly ITestResultRepository _resultRepository;
         private readonly IMapper _mapper;
         private const int PageSize = 10;
 
-        public StudentService(IStudentRepository studentRepository, IMapper mapper)
+        public StudentService(IStudentRepository studentRepository, ITestRepository testRepository, IModuleRepository moduleRepository, ITestResultRepository resultRepository, IMapper mapper)
         {
             _studentRepository = studentRepository;
+            _testRepository = testRepository;
+            _moduleRepository = moduleRepository;
+            _resultRepository = resultRepository;
             _mapper = mapper;
         }
 
@@ -105,6 +112,24 @@ namespace OnlineLearningCenter.BusinessLogic.Services
             var items = dtos.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
 
             return new PaginatedList<StudentRankingDto>(items, totalCount, pageNumber, PageSize);
+        }
+
+        public async Task<IEnumerable<StudentDto>> GetStudentsAvailableForTestAsync(int testId)
+        {
+            var test = await _testRepository.GetByIdAsync(testId);
+            if (test == null) return Enumerable.Empty<StudentDto>();
+            var module = await _moduleRepository.GetByIdAsync(test.ModuleId);
+            if (module == null) return Enumerable.Empty<StudentDto>();
+            var courseId = module.CourseId;
+
+            var enrolledStudents = await _studentRepository.GetStudentsEnrolledInCourseAsync(courseId);
+
+            var studentsWhoPassed = (await _resultRepository.GetResultsForTestAsync(testId))
+                                    .Select(r => r.StudentId).ToHashSet();
+
+            var availableStudents = enrolledStudents.Where(s => !studentsWhoPassed.Contains(s.StudentId));
+
+            return _mapper.Map<IEnumerable<StudentDto>>(availableStudents);
         }
     }
 }

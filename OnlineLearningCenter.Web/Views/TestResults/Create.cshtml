@@ -1,0 +1,31 @@
+﻿@model CreateTestResultDto
+@{
+    ViewData["Title"] = "Добавление результата";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h4>для теста "@ViewBag.TestTitle"</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <input type="hidden" asp-for="TestId" />
+            <div class="mb-3">
+                <label asp-for="StudentId" class="form-label">Студент</label>
+                <select asp-for="StudentId" class="form-select" asp-items="ViewBag.Students">
+                    <option value="">Выберите студента</option>
+                </select>
+                <span asp-validation-for="StudentId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Score" class="form-label">Балл</label>
+                <input asp-for="Score" class="form-control" type="number" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-primary" />
+                <a asp-action="Index" asp-route-testId="@Model.TestId" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -86,4 +86,13 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
 
         return rankingData.Select(r => (r.Student, r.AverageScore)).ToList();
     }
+
+    public async Task<IEnumerable<Student>> GetStudentsEnrolledInCourseAsync(int courseId)
+    {
+        return await _context.Enrollments
+            .Where(e => e.CourseId == courseId)
+            .Select(e => e.Student)
+            .OrderBy(s => s.FullName)
+            .ToListAsync();
+    }
 }

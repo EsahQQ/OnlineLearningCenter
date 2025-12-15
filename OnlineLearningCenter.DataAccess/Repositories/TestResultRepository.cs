@@ -20,4 +20,33 @@ public class TestResultRepository : GenericRepository<TestResult>, ITestResultRe
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<TestResult>> GetResultsForTestAsync(int testId)
+    {
+        return await _context.TestResults.Where(tr => tr.TestId == testId).ToListAsync();
+    }
+
+    public async Task<TestResult?> GetByIdAsync(long id)
+    {
+        return await _context.TestResults.FindAsync(id);
+    }
+
+    public async Task<TestResult?> GetByIdWithDetailsAsync(long id)
+    {
+        return await _context.TestResults
+            .Include(tr => tr.Student)
+            .Include(tr => tr.Test)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(tr => tr.ResultId == id);
+    }
+
+    public async Task DeleteByIdAsync(long id)
+    {
+        var entity = await _context.TestResults.FindAsync(id);
+        if (entity != null)
+        {
+            _context.TestResults.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+    }
 }
