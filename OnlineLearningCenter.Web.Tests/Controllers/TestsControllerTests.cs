@@ -29,8 +29,7 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
             _controller = new TestsController(
                 _mockTestService.Object,
                 _mockModuleService.Object,
-                _mockMapper.Object,
-                _mockResultService.Object);
+                _mockMapper.Object);
         }
 
         [Fact]

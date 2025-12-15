@@ -16,18 +16,24 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
     public class StudentServiceTests
     {
         private readonly Mock<IStudentRepository> _mockStudentRepository;
+        private readonly Mock<ITestRepository> _mockTestRepository;
+        private readonly Mock<IModuleRepository> _mockModuleRepository;
+        private readonly Mock<ITestResultRepository> _mockResultRepository;
         private readonly IMapper _mapper;
         private readonly StudentService _studentService;
 
         public StudentServiceTests()
         {
             _mockStudentRepository = new Mock<IStudentRepository>();
+            _mockTestRepository = new Mock<ITestRepository>();
+            _mockModuleRepository = new Mock<IModuleRepository>();
+            _mockResultRepository = new Mock<ITestResultRepository>();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<BusinessLogic.Mappings.MappingProfile>();
             });
             _mapper = mapperConfig.CreateMapper();
-            _studentService = new StudentService(_mockStudentRepository.Object, _mapper);
+            _studentService = new StudentService(_mockStudentRepository.Object, _mockTestRepository.Object, _mockModuleRepository.Object, _mockResultRepository.Object, _mapper);
         }
 
         [Fact]
