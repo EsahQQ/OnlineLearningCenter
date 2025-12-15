@@ -47,5 +47,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Enrollment>()
                 .Property(e => e.Progress)
                 .HasColumnType("decimal(5, 2)");
+
+        modelBuilder.Entity<TestResult>()
+                .ToTable(tb => tb.HasTrigger("TRG_UpdateEnrollmentProgress"));
     }
 }
