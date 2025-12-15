@@ -33,15 +33,23 @@
                 <input asp-for="Category" class="form-control" />
                 <span asp-validation-for="Category" class="text-danger"></span>
             </div>
+
             <div class="mb-3">
                 <label asp-for="Status" class="form-label">Статус</label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-select">
+                    <option value="">Выберите статус</option>
+                    <option value="В разработке">В разработке</option>
+                    <option value="Активен">Активен</option>
+                    <option value="В архиве">В архиве</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
+
+
             <div class="mb-3">
                 <label asp-for="InstructorId" class="form-label">Преподаватель</label>
                 <select asp-for="InstructorId" class="form-select" asp-items="ViewBag.InstructorId">
-                    <option value="">-- Выберите преподавателя --</option>
+                    <option value="">Выберите преподавателя</option>
                 </select>
                 <span asp-validation-for="InstructorId" class="text-danger"></span>
             </div>
