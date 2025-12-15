@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Services;
+using OnlineLearningCenter.DataAccess.Entities;
 using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers
@@ -124,13 +125,10 @@ namespace OnlineLearningCenter.Web.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteConfirmed(long testResultId)
+        public async Task<IActionResult> DeleteConfirmed(long id, int testId)
         {
-            var result = await _resultService.GetResultByIdAsync(testResultId);
-            if (result == null) return NotFound();
-
-            await _resultService.DeleteResultAsync(testResultId);
-            return RedirectToAction("Results", "Tests", new { testId = result.TestId });
+            await _resultService.DeleteResultAsync(id);
+            return RedirectToAction("Index", "TestResults", new { testId = testId });
         }
     }
 }

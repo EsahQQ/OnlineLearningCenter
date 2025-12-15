@@ -45,13 +45,13 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Название курса</th>
-                <th>Прогресс по модулям</th>
-                <th>Средний балл по тестам</th>
-                <th>Сертификат</th>
+                <th style="width: 100%">Название курса</th>
+                <th class="text-nowrap">Прогресс по модулям</th>
+                <th class="text-nowrap">Средний балл по тестам</th>
+                <th class="text-nowrap">Сертификат</th>
                 @if (User.IsInRole("Admin"))
                 {
-                    <th></th>
+                    <th class="text-nowrap"></th>
                 }
             </tr>
         </thead>
@@ -59,22 +59,22 @@ else
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td class="text-nowrap">
                         <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
                             @Html.DisplayFor(modelItem => item.CourseTitle)
                         </a>
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" style="width: @item.ModulesCompletedProgress.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;" aria-valuenow="@item.ModulesCompletedProgress" aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
                         @item.ModulesCompletedProgress.ToString("0.##")%
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         @item.AverageTestScore.ToString("F2")
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         @{
                             var certificate = (ViewBag.Certificates as IEnumerable<CertificateDto>)
                             ?.FirstOrDefault(c => c.CourseId == item.CourseId);
@@ -106,7 +106,7 @@ else
                     </td>
                     @if (User.IsInRole("Admin"))
                     {
-                        <td>
+                        <td class="text-nowrap">
                             <form asp-controller="Enrollments" asp-action="Delete" method="post" onsubmit="return confirm('Вы уверены, что хотите отчислить студента с этого курса?');">
                             <input type="hidden" name="studentId" value="@student.StudentId" />
                             <input type="hidden" name="courseId" value="@item.CourseId" />

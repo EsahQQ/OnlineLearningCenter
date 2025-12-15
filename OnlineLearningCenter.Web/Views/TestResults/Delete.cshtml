@@ -15,8 +15,9 @@
     <dd class="col-sm-9">@Model.Score</dd>
 </dl>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="TestResultId" name="testResultId" />
+<form asp-action="Delete" asp-route-id="@Model.TestResultId">
+    <input type="hidden" name="studentId" value="@Model.StudentId" />
+    <input type="hidden" name="testId" value="@Model.TestId" />
     <input type="submit" value="Удалить" class="btn btn-danger" /> |
     <a asp-action="Index" asp-route-testId="@Model.TestId" class="btn btn-secondary">Отмена</a>
 </form>
