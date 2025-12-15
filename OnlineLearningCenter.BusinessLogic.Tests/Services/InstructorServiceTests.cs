@@ -15,15 +15,17 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services;
 public class InstructorServiceTests
 {
     private readonly Mock<IInstructorRepository> _mockInstructorRepository;
+    private readonly Mock<ICourseRepository> _mockCourseRepository;
     private readonly IMapper _mapper;
     private readonly InstructorService _instructorService;
 
     public InstructorServiceTests()
     {
         _mockInstructorRepository = new Mock<IInstructorRepository>();
+        _mockCourseRepository = new Mock<ICourseRepository>();
         var mapperConfig = new MapperConfiguration(cfg => { cfg.AddProfile<BusinessLogic.Mappings.MappingProfile>(); });
         _mapper = mapperConfig.CreateMapper();
-        _instructorService = new InstructorService(_mockInstructorRepository.Object, _mapper);
+        _instructorService = new InstructorService(_mockInstructorRepository.Object, _mockCourseRepository.Object, _mapper);
     }
 
     [Fact]
