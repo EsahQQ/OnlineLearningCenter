@@ -26,23 +26,32 @@ public class RankingController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        if (courseId != null)
+        if (HttpContext.Request.Query.ContainsKey(nameof(courseId)))
         {
-            HttpContext.Session.SetInt32("Ranking_CourseId", courseId.Value);
+            if (courseId.HasValue)
+            {
+                HttpContext.Session.SetInt32("Ranking_CourseId", (int)courseId.Value);
+            }
+            else
+            {
+                HttpContext.Session.Remove("Ranking_CourseId");
+            }
+        }
+        else
+        {
+            courseId = HttpContext.Session.GetInt32("Ranking_CourseId");
         }
 
-        var finalCourseId = courseId ?? HttpContext.Session.GetInt32("Ranking_CourseId");
-
-        var rankings = await _studentService.GetStudentRankingsAsync(finalCourseId, pageNumber);
+        var rankings = await _studentService.GetStudentRankingsAsync((int?)courseId, pageNumber);
 
         var allCourses = await _courseService.GetAllCoursesForSelectListAsync();
-        ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", finalCourseId);
+        ViewBag.Courses = new SelectList(allCourses, "CourseId", "Title", courseId);
 
-        ViewData["CurrentCourseId"] = finalCourseId;
+        ViewData["CurrentCourseId"] = courseId;
 
-        if (finalCourseId.HasValue)
+        if (courseId.HasValue)
         {
-            var selectedCourse = allCourses.FirstOrDefault(c => c.CourseId == finalCourseId.Value);
+            var selectedCourse = allCourses.FirstOrDefault(c => c.CourseId == courseId.Value);
             ViewBag.SelectedCourseTitle = selectedCourse?.Title;
         }
 

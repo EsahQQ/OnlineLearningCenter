@@ -31,16 +31,26 @@ public class StudentsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        if (searchString != null)
+        if (HttpContext.Request.Query.ContainsKey(nameof(searchString)))
         {
-            HttpContext.Session.SetString("Students_Search", searchString);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                HttpContext.Session.SetString("Students_Search", searchString);
+            }
+            else
+            {
+                HttpContext.Session.Remove("Students_Search");
+            }
+        }
+        else
+        {
+            searchString = HttpContext.Session.GetString("Students_Search");
         }
 
-        var finalSearchString = searchString ?? HttpContext.Session.GetString("Students_Search");
 
-        var students = await _studentService.GetPaginatedStudentsAsync(finalSearchString, pageNumber);
+        var students = await _studentService.GetPaginatedStudentsAsync(searchString, pageNumber);
 
-        ViewData["CurrentFilter"] = finalSearchString;
+        ViewData["CurrentFilter"] = searchString;
 
         return View(students);
     }

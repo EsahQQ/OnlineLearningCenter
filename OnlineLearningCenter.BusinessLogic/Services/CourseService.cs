@@ -42,20 +42,16 @@ public class CourseService : ICourseService
         bool showOnlyActive,
         int pageNumber)
     {
-        // 1. Вызываем новый метод репозитория
         var (courses, totalCount) = await _courseRepository.GetPaginatedCoursesAsync(
             searchString, category, difficulty, instructorId, showOnlyActive, pageNumber, PageSize);
 
-        // 2. Мапим полученный список Entity в список DTO
         var dtos = _mapper.Map<List<CourseDto>>(courses);
 
-        // 3. Создаем и возвращаем PaginatedList
         return new PaginatedList<CourseDto>(dtos, totalCount, pageNumber, PageSize);
     }
 
     public async Task<IEnumerable<CourseDto>> GetAllCoursesForSelectListAsync()
     {
-        // Используем новый, простой метод
         var courses = await _courseRepository.GetAllCoursesAsync();
         return _mapper.Map<IEnumerable<CourseDto>>(courses);
     }

@@ -28,16 +28,25 @@ public class InstructorsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        if (searchString != null)
+        if (HttpContext.Request.Query.ContainsKey(nameof(searchString)))
         {
-            HttpContext.Session.SetString("Instructors_Search", searchString);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                HttpContext.Session.SetString("Instructors_Search", searchString);
+            }
+            else
+            {
+                HttpContext.Session.Remove("Instructors_Search");
+            }
+        }
+        else
+        {
+            searchString = HttpContext.Session.GetString("Instructors_Search");
         }
 
-        var finalSearchString = searchString ?? HttpContext.Session.GetString("Instructors_Search");
+        var instructors = await _instructorService.GetPaginatedInstructorsAsync(searchString, pageNumber);
 
-        var instructors = await _instructorService.GetPaginatedInstructorsAsync(finalSearchString, pageNumber);
-
-        ViewData["CurrentFilter"] = finalSearchString;
+        ViewData["CurrentFilter"] = searchString;
 
         return View(instructors);
     }

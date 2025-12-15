@@ -1,24 +1,36 @@
 ﻿@model dynamic
 
 @{
-    var routeData = new Dictionary<string, string>
+    var routeData = new Dictionary<string, string>();
+
+    if (ViewData["CurrentSearch"] != null)
     {
-        { "category", ViewData["CurrentCategory"]?.ToString() ?? "" },
-        { "difficulty", ViewData["CurrentDifficulty"]?.ToString() ?? "" },
-        { "instructorId", ViewData["CurrentInstructorId"]?.ToString() ?? "" },
-        { "showOnlyActive", ViewData["CurrentShowOnlyActive"]?.ToString() ?? "" }
-    };
+        routeData["searchString"] = ViewData["CurrentSearch"].ToString();
+    }
+
+    if (ViewData["CurrentCategory"] != null)
+    {
+        routeData["category"] = ViewData["CurrentCategory"].ToString();
+    }
+    if (ViewData["CurrentDifficulty"] != null)
+    {
+        routeData["difficulty"] = ViewData["CurrentDifficulty"].ToString();
+    }
+    if (ViewData["CurrentInstructorId"] != null)
+    {
+        routeData["instructorId"] = ViewData["CurrentInstructorId"].ToString();
+    }
+    if (ViewData["CurrentShowOnlyActive"] != null)
+    {
+        routeData["showOnlyActive"] = ViewData["CurrentShowOnlyActive"].ToString();
+    }
 
     if (ViewData["CurrentCourseId"] != null)
     {
         routeData["courseId"] = ViewData["CurrentCourseId"].ToString();
     }
-
-    if (ViewData["CurrentFilter"] != null)
-    {
-        routeData["searchString"] = ViewData["CurrentFilter"].ToString();
-    }
 }
+
 
 @if (Model.TotalPages > 1)
 {

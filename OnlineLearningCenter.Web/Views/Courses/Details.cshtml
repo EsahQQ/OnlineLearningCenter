@@ -60,11 +60,14 @@
             <div class="card text-center">
                 <div class="card-header">Завершили курс</div>
                 <div class="card-body">
-                    <h2 class="card-title">@Model.Analytics.StudentsCompleted</h2>
                     @if (Model.Analytics.TotalStudentsEnrolled > 0)
                     {
                         var completionRate = (double)Model.Analytics.StudentsCompleted / Model.Analytics.TotalStudentsEnrolled * 100;
-                        <p class="card-text">(@completionRate.ToString("F1") %)</p>
+                        <h2 class="card-title">@Model.Analytics.StudentsCompleted (@completionRate.ToString("F1") %)</h2>
+                    }
+                    else
+                    {
+                        <h2 class="card-title">@Model.Analytics.StudentsCompleted</h2>
                     }
                 </div>
             </div>
@@ -92,7 +95,7 @@
 }
 
 <table class="table">
-    <thead><tr><th>#</th><th>Название</th><th></th></tr></thead>
+    <thead><tr><th>#</th><th style="width: 100%">Название</th><th></th></tr></thead>
     <tbody>
         @foreach (var module in Model.Modules)
         {
@@ -102,14 +105,14 @@
                 <td class="text-nowrap">
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-controller="Modules" asp-action="Edit" asp-route-id="@module.ModuleId" class="btn btn-sm btn-outline-warning" title="Редактировать модуль">
+                        <a asp-controller="Modules" asp-action="Edit" asp-route-id="@module.ModuleId" class="btn btn-sm btn-warning" title="Редактировать модуль">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a asp-controller="Modules" asp-action="Delete" asp-route-id="@module.ModuleId" class="btn btn-sm btn-outline-danger" title="Удалить модуль">
+                        <a asp-controller="Modules" asp-action="Delete" asp-route-id="@module.ModuleId" class="btn btn-sm btn-danger" title="Удалить модуль">
                             <i class="bi bi-trash"></i>
                         </a>
                     }
-                    <a asp-controller="Tests" asp-action="Index" asp-route-moduleId="@module.ModuleId" class="btn btn-sm btn-outline-info" title="Управлять тестами">
+                    <a asp-controller="Tests" asp-action="Index" asp-route-moduleId="@module.ModuleId" class="btn btn-sm btn-info" title="Управлять тестами">
                         <i class="bi bi-card-checklist"></i> Тесты
                     </a>
                 </td>
@@ -119,10 +122,12 @@
 </table>
 
 <div class="mt-4">
-    @if (User.IsInRole("Admin"))
+    @if (Model.Course != null)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Course?.CourseId">Редактировать</a> 
-        @: |
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Course.CourseId" class="btn btn-secondary">Редактировать</a>
+        }
     }
-    <a asp-action="Index">Назад к списку</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад к списку</a>
 </div>

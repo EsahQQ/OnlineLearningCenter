@@ -35,26 +35,48 @@ public class CoursesController : Controller
         int pageNumber = 1,
         string? clearFilter = null)
     {
-
         if (clearFilter != null)
         {
             HttpContext.Session.Clear();
             return RedirectToAction(nameof(Index));
         }
 
-        if (searchString != null) HttpContext.Session.SetString("Courses_Search", searchString);
-        if (category != null) HttpContext.Session.SetString("Courses_Category", category);
-        if (difficulty != null) HttpContext.Session.SetString("Courses_Difficulty", difficulty);
-        if (instructorId != null) HttpContext.Session.SetInt32("Courses_InstructorId", instructorId.Value);
-        if (showOnlyActive != null) HttpContext.Session.SetString("Courses_ShowActive", showOnlyActive.Value.ToString());
+        bool hasNewFilters = HttpContext.Request.Query.ContainsKey(nameof(searchString)) ||
+                             HttpContext.Request.Query.ContainsKey(nameof(category)) ||
+                             HttpContext.Request.Query.ContainsKey(nameof(difficulty)) ||
+                             HttpContext.Request.Query.ContainsKey(nameof(instructorId)) ||
+                             HttpContext.Request.Query.ContainsKey(nameof(showOnlyActive));
 
-        var finalSearchString = searchString ?? HttpContext.Session.GetString("Courses_Search");
-        var finalCategory = category ?? HttpContext.Session.GetString("Courses_Category");
-        var finalDifficulty = difficulty ?? HttpContext.Session.GetString("Courses_Difficulty");
-        var finalInstructorId = instructorId ?? HttpContext.Session.GetInt32("Courses_InstructorId");
+        string finalSearchString;
+        string finalCategory;
+        string finalDifficulty;
+        int? finalInstructorId;
+        bool finalShowOnlyActive;
 
-        var showActiveString = HttpContext.Session.GetString("Courses_ShowActive");
-        var finalShowOnlyActive = showOnlyActive ?? (showActiveString != null ? bool.Parse(showActiveString) : true); // По умолчанию true
+        if (hasNewFilters)
+        {
+            finalSearchString = searchString;
+            finalCategory = category;
+            finalDifficulty = difficulty;
+            finalInstructorId = instructorId;
+            finalShowOnlyActive = showOnlyActive ?? false; 
+
+            HttpContext.Session.SetString("Courses_Search", finalSearchString ?? "");
+            HttpContext.Session.SetString("Courses_Category", finalCategory ?? "");
+            HttpContext.Session.SetString("Courses_Difficulty", finalDifficulty ?? "");
+            HttpContext.Session.SetInt32("Courses_InstructorId", finalInstructorId ?? 0);
+            HttpContext.Session.SetString("Courses_ShowActive", finalShowOnlyActive.ToString());
+        }
+        else
+        {
+            finalSearchString = HttpContext.Session.GetString("Courses_Search");
+            finalCategory = HttpContext.Session.GetString("Courses_Category");
+            finalDifficulty = HttpContext.Session.GetString("Courses_Difficulty");
+            finalInstructorId = HttpContext.Session.GetInt32("Courses_InstructorId");
+            if (finalInstructorId == 0) finalInstructorId = null;
+
+            finalShowOnlyActive = bool.Parse(HttpContext.Session.GetString("Courses_ShowActive") ?? "true");
+        }
 
         var paginatedCourses = await _courseService.GetPaginatedCoursesAsync(finalSearchString,
             finalCategory, finalDifficulty, finalInstructorId, finalShowOnlyActive, pageNumber);
@@ -68,7 +90,7 @@ public class CoursesController : Controller
         ViewBag.Difficulties = new SelectList(difficulties, finalDifficulty);
         ViewBag.ShowOnlyActive = finalShowOnlyActive;
 
-        ViewData["CurrentFilter"] = finalSearchString;
+        ViewData["CurrentSearch"] = finalSearchString;
         ViewData["CurrentCategory"] = finalCategory;
         ViewData["CurrentDifficulty"] = finalDifficulty;
         ViewData["CurrentInstructorId"] = finalInstructorId;

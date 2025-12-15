@@ -83,7 +83,7 @@ namespace OnlineLearningCenter.Web
                 seedTask.Wait();
             }
 
-            // Настройка конвейера обработки HTTP-запросов (HTTP request pipeline)
+            // Настройка конвейера обработки HTTP-запросов
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");

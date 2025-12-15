@@ -16,7 +16,7 @@
             <th>
                 ID
             </th>
-            <th>
+            <th style="width: 100%">
                 Email (Username)
             </th>
             <th></th>
@@ -26,13 +26,13 @@
         @foreach (var user in Model)
         {
             <tr>
-                <td>
+                <td class ="text-nowrap">
                     @user.Id
                 </td>
                 <td>
                     @user.UserName
                 </td>
-                <td>
+                <td class="text-nowrap">
                     <a asp-action="ManageRoles" asp-route-id="@user.Id" class="btn btn-sm btn-warning" title="Редактировать">
                         <i class="bi bi-pencil-square"></i>
                     </a>
