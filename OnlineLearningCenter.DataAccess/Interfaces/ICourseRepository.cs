@@ -9,7 +9,6 @@ public interface ICourseRepository : IGenericRepository<Course>
     Task<Course?> GetCourseWithDetailsAsync(int id);
     Task<IEnumerable<string>> GetAllCategoriesAsync();
     Task<IEnumerable<string>> GetAllDifficultiesAsync();
-    Task<Course?> GetCourseForAnalyticsAsync(int courseId);
     Task<(List<Course> Items, int TotalCount)> GetPaginatedCoursesAsync(
             string? searchString,
             string? category,
@@ -19,4 +18,5 @@ public interface ICourseRepository : IGenericRepository<Course>
             int pageNumber,
             int pageSize);
     Task<List<Course>> GetAllCoursesAsync();
+    Task<(int TotalStudents, int CompletedStudents, double AverageScore)> GetCourseAnalyticsDataAsync(int courseId);
 }

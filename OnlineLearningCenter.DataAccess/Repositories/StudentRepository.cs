@@ -95,4 +95,13 @@ public class StudentRepository : GenericRepository<Student>, IStudentRepository
             .OrderBy(s => s.FullName)
             .ToListAsync();
     }
+    public async Task<List<Enrollment>> GetEnrollmentsWithDetailsAsync(int studentId)
+    {
+        return await _context.Enrollments
+            .Where(e => e.StudentId == studentId)
+            .Include(e => e.Course)
+                .ThenInclude(c => c.Modules)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }

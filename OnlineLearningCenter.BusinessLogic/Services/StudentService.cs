@@ -30,22 +30,34 @@ namespace OnlineLearningCenter.BusinessLogic.Services
 
         public async Task<IEnumerable<StudentCourseProgressDto>> GetStudentProgressAsync(int studentId)
         {
-            var student = await _studentRepository.GetStudentWithProgressDataAsync(studentId);
-            if (student == null || student.Enrollments == null)
+            var enrollments = await _studentRepository.GetEnrollmentsWithDetailsAsync(studentId);
+            var allTestResults = await _resultRepository.GetAllResultsForStudentAsync(studentId);
+
+            if (enrollments == null || !enrollments.Any())
             {
                 return Enumerable.Empty<StudentCourseProgressDto>();
             }
 
+            var resultsGroupedByCourse = allTestResults
+                .Where(tr => tr.Test?.Module != null)
+                .GroupBy(tr => tr.Test.Module.CourseId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
             var progressList = new List<StudentCourseProgressDto>();
 
-            foreach (var enrollment in student.Enrollments)
+            foreach (var enrollment in enrollments)
             {
                 var course = enrollment.Course;
-                if (course == null || course.Modules == null) continue;
+                if (course == null) continue;
 
-                var courseModuleIds = course.Modules.Select(m => m.ModuleId).ToHashSet();
-                var relevantTestResults = student.TestResults.Where(tr => tr.Test != null && courseModuleIds.Contains(tr.Test.ModuleId));
-                double averageScore = relevantTestResults.Any() ? relevantTestResults.Average(tr => tr.Score) : 0;
+                double averageScore = 0;
+                if (resultsGroupedByCourse.TryGetValue(course.CourseId, out var relevantTestResults))
+                {
+                    if (relevantTestResults.Any())
+                    {
+                        averageScore = relevantTestResults.Average(tr => tr.Score);
+                    }
+                }
 
                 var progressDto = new StudentCourseProgressDto
                 {
@@ -56,6 +68,7 @@ namespace OnlineLearningCenter.BusinessLogic.Services
                 };
                 progressList.Add(progressDto);
             }
+
             return progressList;
         }
 

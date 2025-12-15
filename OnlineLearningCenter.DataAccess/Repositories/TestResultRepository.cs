@@ -57,4 +57,14 @@ public class TestResultRepository : GenericRepository<TestResult>, ITestResultRe
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<List<TestResult>> GetAllResultsForStudentAsync(int studentId)
+    {
+        return await _context.TestResults
+            .Where(tr => tr.StudentId == studentId)
+            .Include(tr => tr.Test)
+                .ThenInclude(t => t.Module)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }

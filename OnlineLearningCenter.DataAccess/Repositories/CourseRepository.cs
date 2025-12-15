@@ -41,17 +41,6 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
             .ToListAsync();
     }
 
-    public async Task<Course?> GetCourseForAnalyticsAsync(int courseId)
-    {
-        return await _context.Courses
-            .Include(c => c.Enrollments)
-            .Include(c => c.Modules)
-                .ThenInclude(m => m.Tests)
-                    .ThenInclude(t => t.TestResults)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.CourseId == courseId);
-    }
-
     public async Task<(List<Course> Items, int TotalCount)> GetPaginatedCoursesAsync(
         string? searchString,
         string? category,
@@ -104,5 +93,25 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
             .AsNoTracking()
             .OrderBy(c => c.Title)
             .ToListAsync();
+    }
+
+    public async Task<(int TotalStudents, int CompletedStudents, double AverageScore)> GetCourseAnalyticsDataAsync(int courseId)
+    {
+        var totalStudents = await _context.Enrollments
+            .Where(e => e.CourseId == courseId)
+            .CountAsync();
+
+        var completedStudents = await _context.Enrollments
+            .Where(e => e.CourseId == courseId && e.Progress >= 100)
+            .CountAsync();
+
+        var averageScoreQuery = _context.TestResults
+            .Where(tr => tr.Test.Module.CourseId == courseId);
+
+        var averageScore = await averageScoreQuery.AnyAsync()
+            ? await averageScoreQuery.AverageAsync(tr => tr.Score)
+            : 0.0;
+
+        return (totalStudents, completedStudents, averageScore);
     }
 }

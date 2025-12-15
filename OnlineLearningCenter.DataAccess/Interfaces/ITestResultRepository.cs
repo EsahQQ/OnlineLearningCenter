@@ -11,4 +11,5 @@ public interface ITestResultRepository : IGenericRepository<TestResult>
     Task<TestResult?> GetByIdAsync(long id); 
     Task<TestResult?> GetByIdWithDetailsAsync(long id);
     Task DeleteByIdAsync(long id);
+    Task<List<TestResult>> GetAllResultsForStudentAsync(int studentId);
 }
