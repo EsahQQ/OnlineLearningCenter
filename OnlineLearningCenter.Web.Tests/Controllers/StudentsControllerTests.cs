@@ -45,16 +45,26 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
         [Fact]
         public async Task Index_ShouldReturnViewWithPaginatedStudents()
         {
-            // Arrange
             var students = new List<StudentDto>();
             var paginatedList = new PaginatedList<StudentDto>(students, 0, 1, 10);
             _mockStudentService.Setup(s => s.GetPaginatedStudentsAsync(It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(paginatedList);
 
-            // Act
+            var httpContextMock = new Mock<HttpContext>();
+            var requestMock = new Mock<HttpRequest>();
+            var sessionMock = new Mock<ISession>();
+
+            requestMock.Setup(r => r.Query).Returns(new QueryCollection());
+            httpContextMock.Setup(c => c.Request).Returns(requestMock.Object);
+            httpContextMock.Setup(c => c.Session).Returns(sessionMock.Object);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContextMock.Object
+            };
+
             var result = await _controller.Index(null, 1);
 
-            // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
             viewResult.Model.Should().BeOfType<PaginatedList<StudentDto>>();
         }

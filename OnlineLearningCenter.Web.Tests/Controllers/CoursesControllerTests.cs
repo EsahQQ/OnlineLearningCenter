@@ -48,23 +48,33 @@ namespace OnlineLearningCenter.Web.Tests.Controllers
         [Fact]
         public async Task Index_ShouldReturnViewResult_WithPaginatedListOfCourses()
         {
-            // Arrange
             var courseDtos = new List<CourseDto> { new CourseDto(), new CourseDto() };
             var paginatedList = new PaginatedList<CourseDto>(courseDtos, 2, 1, 10);
 
             _mockCourseService.Setup(s => s.GetPaginatedCoursesAsync(
-                It.IsAny<string>(), 
-                It.IsAny<string>(), 
                 It.IsAny<string>(),
-                It.IsAny<int?>(),   
-                It.IsAny<bool>(),  
-                It.IsAny<int>()))   
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int?>(),
+                It.IsAny<bool>(),
+                It.IsAny<int>()))
                 .ReturnsAsync(paginatedList);
 
-            // Act
+            var httpContextMock = new Mock<HttpContext>();
+            var requestMock = new Mock<HttpRequest>();
+            var sessionMock = new Mock<ISession>();
+
+            requestMock.Setup(r => r.Query).Returns(new QueryCollection());
+            httpContextMock.Setup(c => c.Request).Returns(requestMock.Object);
+            httpContextMock.Setup(c => c.Session).Returns(sessionMock.Object);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContextMock.Object
+            };
+
             var result = await _controller.Index(null, null, null, null, true, 1);
 
-            // Assert
             var viewResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = viewResult.Model.Should().BeOfType<PaginatedList<CourseDto>>().Subject;
             model.Should().HaveCount(2);
