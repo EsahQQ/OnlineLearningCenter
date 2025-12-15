@@ -110,42 +110,12 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
         {
             // Arrange
             var courseId = 1;
-            var course = new Entities.Course
-            {
-                CourseId = courseId,
-                Title = "Analytics Test Course",
-                Enrollments = new List<Entities.Enrollment>
-                {
-                    new Entities.Enrollment { Progress = 100 },
-                    new Entities.Enrollment { Progress = 50 },
-                    new Entities.Enrollment { Progress = 100 }
-                },
-                Modules = new List<Entities.Module>
-                {
-                    new Entities.Module
-                    {
-                        Tests = new List<Entities.Test>
-                        {
-                            new Entities.Test
-                            {
-                                TestResults = new List<Entities.TestResult> { new Entities.TestResult { Score = 80 }, new Entities.TestResult { Score = 90 } }
-                            }
-                        }
-                    },
-                    new Entities.Module
-                    {
-                        Tests = new List<Entities.Test>
-                        {
-                            new Entities.Test
-                            {
-                                TestResults = new List<Entities.TestResult> { new Entities.TestResult { Score = 70 } }
-                            }
-                        }
-                    }
-                }
-            };
+            var course = new Entities.Course { CourseId = courseId, Title = "Analytics Test Course" };
 
-            _mockCourseRepository.Setup(repo => repo.GetCourseForAnalyticsAsync(courseId)).ReturnsAsync(course);
+            _mockCourseRepository.Setup(repo => repo.GetByIdAsync(courseId)).ReturnsAsync(course);
+
+            _mockCourseRepository.Setup(repo => repo.GetCourseAnalyticsDataAsync(courseId))
+                .ReturnsAsync((3, 2, 80.0)); 
 
             // Act
             var result = await _courseService.GetCourseAnalyticsAsync(courseId);
@@ -154,7 +124,8 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
             result.Should().NotBeNull();
             result.TotalStudentsEnrolled.Should().Be(3);
             result.StudentsCompleted.Should().Be(2);
-            result.AverageScoreForCourse.Should().Be(80);
+            result.AverageScoreForCourse.Should().Be(80.0);
+            result.CourseTitle.Should().Be("Analytics Test Course");
         }
 
         [Fact]

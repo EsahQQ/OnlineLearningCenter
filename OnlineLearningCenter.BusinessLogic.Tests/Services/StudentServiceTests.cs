@@ -62,29 +62,30 @@ namespace OnlineLearningCenter.BusinessLogic.Tests.Services
         {
             // Arrange
             var studentId = 1;
-            var student = new Entities.Student
+
+            var enrollments = new List<Entities.Enrollment>
             {
-                StudentId = studentId,
-                Enrollments = new List<Entities.Enrollment>
+                new Entities.Enrollment
                 {
-                    new Entities.Enrollment
+                    StudentId = studentId,
+                    Progress = 50,
+                    Course = new Entities.Course
                     {
-                        Progress = 50,
-                        Course = new Entities.Course
-                        {
-                            CourseId = 10, Title = "Курс по C#",
-                            Modules = new List<Entities.Module> { new Entities.Module { ModuleId = 101 } }
-                        }
+                        CourseId = 10, Title = "Курс по C#",
+                        Modules = new List<Entities.Module> { new Entities.Module { ModuleId = 101, CourseId = 10 } }
                     }
-                },
-                TestResults = new List<Entities.TestResult>
-                {
-                    new Entities.TestResult { Score = 80, Test = new Entities.Test { ModuleId = 101 } },
-                    new Entities.TestResult { Score = 90, Test = new Entities.Test { ModuleId = 101 } },
-                    new Entities.TestResult { Score = 100, Test = new Entities.Test { ModuleId = 999 } }
                 }
             };
-            _mockStudentRepository.Setup(repo => repo.GetStudentWithProgressDataAsync(studentId)).ReturnsAsync(student);
+
+                    var testResults = new List<Entities.TestResult>
+            {
+                new Entities.TestResult { Score = 80, Test = new Entities.Test { ModuleId = 101, Module = new Entities.Module { CourseId = 10 } } },
+                new Entities.TestResult { Score = 90, Test = new Entities.Test { ModuleId = 101, Module = new Entities.Module { CourseId = 10 } } },
+                new Entities.TestResult { Score = 100, Test = new Entities.Test { ModuleId = 999, Module = new Entities.Module { CourseId = 99 } } }
+            };
+
+            _mockStudentRepository.Setup(repo => repo.GetEnrollmentsWithDetailsAsync(studentId)).ReturnsAsync(enrollments);
+            _mockResultRepository.Setup(repo => repo.GetAllResultsForStudentAsync(studentId)).ReturnsAsync(testResults);
 
             // Act
             var result = await _studentService.GetStudentProgressAsync(studentId);
