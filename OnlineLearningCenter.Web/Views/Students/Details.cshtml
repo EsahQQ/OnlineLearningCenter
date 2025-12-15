@@ -67,9 +67,9 @@ else
                     <td>
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" style="width: @item.ModulesCompletedProgress.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;" aria-valuenow="@item.ModulesCompletedProgress" aria-valuemin="0" aria-valuemax="100">
-                                @item.ModulesCompletedProgress.ToString("0.##")%
                             </div>
                         </div>
+                        @item.ModulesCompletedProgress.ToString("0.##")%
                     </td>
                     <td>
                         @item.AverageTestScore.ToString("F2")

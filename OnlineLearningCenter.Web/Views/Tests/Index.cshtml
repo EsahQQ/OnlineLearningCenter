@@ -29,10 +29,10 @@
                 <td class="text-nowrap">
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@test.TestId" class="btn btn-sm btn-outline-warning" title="Редактировать"><i class="bi bi-pencil-square"></i></a>
-                        <a asp-action="Delete" asp-route-id="@test.TestId" class="btn btn-sm btn-outline-danger" title="Удалить"><i class="bi bi-trash3"></i></a>
+                        <a asp-action="Edit" asp-route-id="@test.TestId" class="btn btn-sm btn-warning" title="Редактировать"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-action="Delete" asp-route-id="@test.TestId" class="btn btn-sm btn-danger" title="Удалить"><i class="bi bi-trash3"></i></a>
                     }
-                    <a asp-action="Results" asp-route-testId="@test.TestId" class="btn btn-sm btn-outline-success" title="Результаты"><i class="bi bi-bar-chart-steps"></i></a>
+                    <a asp-action="Results" asp-route-testId="@test.TestId" class="btn btn-sm btn-success" title="Результаты"><i class="bi bi-bar-chart-steps"></i></a>
                 </td>
             </tr>
         }
