@@ -12,5 +12,5 @@ public interface IInstructorService
     Task<InstructorDto?> GetInstructorByIdAsync(int id);
     Task<InstructorDto> CreateInstructorAsync(CreateInstructorDto instructorDto);
     Task UpdateInstructorAsync(UpdateInstructorDto instructorDto);
-    Task DeleteInstructorAsync(int id);
+    Task<List<CourseDto>> DeleteInstructorAsync(int id);
 }

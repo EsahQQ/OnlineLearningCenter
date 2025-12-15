@@ -1,10 +1,31 @@
 ﻿@model OnlineLearningCenter.BusinessLogic.DTOs.InstructorDto
+@using OnlineLearningCenter.BusinessLogic.DTOs
 
 @{
     ViewData["Title"] = "Удаление";
 }
 
 <h1>Удаление</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <p>@TempData["ErrorMessage"]</p>
+        @if (ViewBag.BlockingCourses != null)
+        {
+            <ul>
+                @foreach (var course in (List<CourseDto>)ViewBag.BlockingCourses)
+                {
+                    <li>
+                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseId">
+                            @course.Title
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}
 
 <h3>Вы уверены, что хотите удалить этого преподавателя?</h3>
 <div>

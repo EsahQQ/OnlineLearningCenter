@@ -121,6 +121,13 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
+
+        if (TempData["BlockingCourses"] is string blockingCoursesJson)
+        {
+            var blockingCourses = System.Text.Json.JsonSerializer.Deserialize<List<CourseDto>>(blockingCoursesJson);
+            ViewBag.BlockingCourses = blockingCourses;
+        }
+
         var instructor = await _instructorService.GetInstructorByIdAsync(id.Value);
         if (instructor == null) return NotFound();
         return View(instructor);
@@ -132,7 +139,17 @@ public class InstructorsController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _instructorService.DeleteInstructorAsync(id);
+        var blockingCourses = await _instructorService.DeleteInstructorAsync(id);
+
+        if (blockingCourses.Any())
+        {
+            TempData["ErrorMessage"] = "Невозможно удалить преподавателя, так как за ним закреплены следующие курсы:";
+            TempData["BlockingCourses"] = System.Text.Json.JsonSerializer.Serialize(blockingCourses);
+
+            return RedirectToAction(nameof(Delete), new { id = id });
+        }
+
+        TempData["SuccessMessage"] = "Преподаватель успешно удален.";
         return RedirectToAction(nameof(Index));
     }
 }

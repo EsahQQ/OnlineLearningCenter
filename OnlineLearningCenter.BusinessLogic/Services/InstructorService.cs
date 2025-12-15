@@ -3,6 +3,7 @@ using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using OnlineLearningCenter.DataAccess.Interfaces;
+using OnlineLearningCenter.DataAccess.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,12 +12,14 @@ namespace OnlineLearningCenter.BusinessLogic.Services;
 public class InstructorService : IInstructorService
 {
     private readonly IInstructorRepository _instructorRepository;
+    private readonly ICourseRepository _courseRepository;
     private readonly IMapper _mapper;
     private const int PageSize = 10;
 
-    public InstructorService(IInstructorRepository instructorRepository, IMapper mapper)
+    public InstructorService(IInstructorRepository instructorRepository, ICourseRepository courseRepository, IMapper mapper)
     {
         _instructorRepository = instructorRepository;
+        _courseRepository = courseRepository;
         _mapper = mapper;
     }
 
@@ -40,9 +43,18 @@ public class InstructorService : IInstructorService
         return _mapper.Map<InstructorDto>(instructor);
     }
 
-    public async Task DeleteInstructorAsync(int id)
+    public async Task<List<CourseDto>> DeleteInstructorAsync(int id)
     {
+        var allCourses = await _courseRepository.GetAllAsync();
+        var blockingCourses = allCourses.Where(c => c.InstructorId == id).ToList();
+
+        if (blockingCourses.Any())
+        {
+            return _mapper.Map<List<CourseDto>>(blockingCourses);
+        }
+
         await _instructorRepository.DeleteAsync(id);
+        return new List<CourseDto>();
     }
 
     public async Task<InstructorDto?> GetInstructorByIdAsync(int id)
