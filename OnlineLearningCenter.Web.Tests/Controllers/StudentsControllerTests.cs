@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Helpers;
-using OnlineLearningCenter.BusinessLogic.Services;
+using OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 using OnlineLearningCenter.Web.Controllers;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using OnlineLearningCenter.BusinessLogic.DTOs;
 using OnlineLearningCenter.BusinessLogic.Helpers;
-using OnlineLearningCenter.BusinessLogic.Services;
 using OnlineLearningCenter.Web.Controllers;
 using OnlineLearningCenter.Web.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.AspNetCore.Http;
+using OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 
 namespace OnlineLearningCenter.Web.Tests.Controllers
 {

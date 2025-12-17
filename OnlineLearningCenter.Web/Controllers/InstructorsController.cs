@@ -1,9 +1,9 @@
-﻿using AutoMapper; 
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineLearningCenter.BusinessLogic.DTOs;
-using OnlineLearningCenter.BusinessLogic.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 
 namespace OnlineLearningCenter.Web.Controllers;
 

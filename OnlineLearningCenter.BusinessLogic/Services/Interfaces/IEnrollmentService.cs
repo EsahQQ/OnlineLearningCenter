@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-namespace OnlineLearningCenter.BusinessLogic.Services;
+namespace OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 
 public interface IEnrollmentService
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineLearningCenter.BusinessLogic.Services;
+using OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace OnlineLearningCenter.Web.Controllers;

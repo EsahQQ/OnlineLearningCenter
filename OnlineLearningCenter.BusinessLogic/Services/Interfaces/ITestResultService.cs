@@ -3,7 +3,7 @@ using OnlineLearningCenter.BusinessLogic.Helpers;
 using OnlineLearningCenter.DataAccess.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-namespace OnlineLearningCenter.BusinessLogic.Services;
+namespace OnlineLearningCenter.BusinessLogic.Services.Interfaces;
 
 public interface ITestResultService
 {

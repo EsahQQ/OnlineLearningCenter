@@ -3,7 +3,7 @@ using OnlineLearningCenter.BusinessLogic.Helpers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OnlineLearningCenter.BusinessLogic.Services
+namespace OnlineLearningCenter.BusinessLogic.Services.Interfaces
 {
     public interface IStudentService
     {
