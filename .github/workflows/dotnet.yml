@@ -7,7 +7,8 @@ on:
 env:
   DOTNET_VERSION: '8.0.x'
 
-build:
+jobs:
+  build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
