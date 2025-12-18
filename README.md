@@ -1,8 +1,8 @@
 # Web-приложение баз данных "Центр онлайн обучения"
 
-[![Build and Publish for coursework](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml/badge.svg)](https://github.com/IT-GSTU/iti9/actions/workflows/dotnet.yml)
+[![Build and Publish](https://github.com/EsahQQ/OnlineLearningCenter/actions/workflows/dotnet.yml/badge.svg)](https://github.com/EsahQQ/OnlineLearningCenter/actions/workflows/dotnet.yml)
 
-Курсовой проект по дисциплине "Разработка приложений баз данных для информационных систем". Приложение представляет собой систему управления для центра онлайн-обучения и реализовано на платформе .NET 8.
+Приложение представляет собой систему управления для центра онлайн-обучения и реализовано на платформе .NET 8.
 
 ## Технологический стек
 
@@ -37,3 +37,6 @@
     ```
 4.  Создайте базы данных и примените миграции с помощью команд `Update-Database` в "Консоли диспетчера пакетов" для каждого DbContext.
 5.  Запустите проект (`F5`).
+
+---
+*Курсовой проект по дисциплине "Разработка приложений баз данных для информационных систем*
