@@ -2,7 +2,7 @@ name: Build and Publish for coursework
 
 on:
   push:
-    branches: [coursework]
+    branches: [main]
 
 env:
   DOTNET_VERSION: '8.0.x'
